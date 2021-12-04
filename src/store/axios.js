@@ -2,7 +2,7 @@ import Axios from "axios";
 
 const axios = Axios.create({
   // baseURL: "http://localhost:4000/api"
-  baseURL: "https://kosoa.herokuapp.com"
+  baseURL: "https://kosoa.herokuapp.com/api"
 });
 
 export default axios;
