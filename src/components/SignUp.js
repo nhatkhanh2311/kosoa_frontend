@@ -23,7 +23,6 @@ function SignUp() {
   const [phone, setPhone] = useState("");
   const [role, setRole] = useState("student");
   const [validations, setValidations] = useState({});
-  const [error, setError] = useState("");
   const [disableButton, setDisableButton] = useState(false);
 
   useEffect(() => {
@@ -37,10 +36,6 @@ function SignUp() {
     setValidations({});
     setDisableButton(false);
   }, [signCtx.signUp]);
-
-  useEffect(() => {
-    setError("");
-  }, [username, password, repass, name, email, birthday]);
 
   const validate = () => {
     let validations = {
@@ -222,10 +217,6 @@ function SignUp() {
                 </Typography>
               </Grid>
             </Grid>
-
-            <Typography sx={styles.error}>
-              {error}
-            </Typography>
 
             <Button disabled={disableButton} variant="contained" color="success" sx={styles.button} type="submit">
               đăng ký
