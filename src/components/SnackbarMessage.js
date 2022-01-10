@@ -1,5 +1,5 @@
 import React, {forwardRef, useContext} from "react";
-import snackbarContext from "../store/snackbar-context";
+import snackbarContext from "../stores/snackbar-context";
 import {Alert, Snackbar} from "@mui/material";
 
 const SuperAlert = forwardRef(function SuperAlert(props, ref) {

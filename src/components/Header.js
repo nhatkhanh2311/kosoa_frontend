@@ -1,12 +1,15 @@
 import React, {useContext, useState} from "react";
-import secureStorage from "../store/secure-storage";
-import signContext from "../store/sign-context";
+import secureStorage from "../stores/secure-storage";
+import {useHistory} from "react-router-dom";
+import signContext from "../stores/sign-context";
 import {
-  alpha, AppBar, Box, Button, InputBase, Toolbar, styled, Tooltip, IconButton, Avatar, Menu, MenuItem, Typography
+  alpha, AppBar, Box, Button, InputBase, Toolbar, styled, Tooltip, IconButton, Avatar, Menu, MenuItem, Typography,
+  Divider
 } from "@mui/material";
-import {Search as SearchIcon} from "@mui/icons-material";
+import {Login as LoginIcon, Logout as LogoutIcon, Search as SearchIcon} from "@mui/icons-material";
 
 function Header() {
+  const history = useHistory();
   const signCtx = useContext(signContext);
 
   const [anchorMenu, setAnchorMenu] = useState(null);
@@ -14,13 +17,18 @@ function Header() {
   const handleOpenMenu = (e) => setAnchorMenu(e.currentTarget);
   const handleCloseMenu = () => setAnchorMenu(null);
 
+  const toSetEdit = () => {
+    history.push("/admin/sets/welcome");
+    handleCloseMenu();
+  }
+
   const signOut = () => {
     secureStorage.clear();
     window.location.reload();
   }
 
   return (
-    <AppBar position="static" color="success">
+    <AppBar position="sticky" color="success" sx={styles.header}>
       <Toolbar>
         <Box sx={styles.boxLeft}>
           <Search>
@@ -33,12 +41,12 @@ function Header() {
 
         {!secureStorage.getItem("token") ? (
           <Box sx={styles.boxRight}>
-            <Button variant="contained" color="warning" sx={styles.button} onClick={signCtx.onSignIn}>
-              đăng nhập
-            </Button>
-
             <Button variant="contained" color="warning" sx={styles.button} onClick={signCtx.onSignUp}>
               đăng ký
+            </Button>
+
+            <Button startIcon={<LoginIcon/>} variant="outlined" color="warning" sx={styles.button} onClick={signCtx.onSignIn}>
+              đăng nhập
             </Button>
           </Box>
         ) : (
@@ -52,8 +60,19 @@ function Header() {
             </Tooltip>
 
             <Menu open={!!anchorMenu} onClose={handleCloseMenu} anchorEl={anchorMenu}>
+              {secureStorage.getItem("role") === "admin" && (
+                <MenuItem onClick={toSetEdit}>
+                  <Typography fontSize={18}>
+                    Chỉnh sửa học phần
+                  </Typography>
+                </MenuItem>
+              )}
+
+              <Divider/>
+
               <MenuItem onClick={signOut}>
-                <Typography textAlign="center">
+                <LogoutIcon color="error"/>
+                <Typography color="red" fontSize={18} ml={1}>
                   Đăng xuất
                 </Typography>
               </MenuItem>
@@ -69,7 +88,6 @@ export default Header;
 
 const styles = {
   header: {
-    color: "#254000"
   },
   boxLeft: {
     flexGrow: 1,
@@ -82,8 +100,7 @@ const styles = {
   button: {
     mx: 1,
     my: 2,
-    color: "white",
-    display: "block"
+    color: "white"
   }
 }
 

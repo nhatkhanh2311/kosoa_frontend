@@ -1,4 +1,5 @@
 import Axios from "axios";
+import secureStorage from "./secure-storage";
 
 const axios = Axios.create({
   // baseURL: "http://localhost:4000/api"
@@ -9,7 +10,7 @@ export default axios;
 
 axios.interceptors.request.use(
   async (config) => {
-    config.headers.Authorization = `Bearer ${localStorage.getItem("token")}`;
+    config.headers.Authorization = `Bearer ${secureStorage.getItem("token")}`;
     return config;
   }
 );

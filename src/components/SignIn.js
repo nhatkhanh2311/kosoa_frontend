@@ -1,8 +1,8 @@
 import React, {useContext, useEffect, useState} from "react";
-import axios from "../store/axios";
-import secureStorage from "../store/secure-storage";
-import signContext from "../store/sign-context";
-import snackbarContext from "../store/snackbar-context";
+import axios from "../stores/axios";
+import secureStorage from "../stores/secure-storage";
+import signContext from "../stores/sign-context";
+import snackbarContext from "../stores/snackbar-context";
 import {
   Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormControlLabel, TextField,
 } from "@mui/material";
@@ -53,13 +53,14 @@ function SignIn() {
           password: password
         })
         .then((res) => {
-          secureStorage.setItem("token", res.data["token"]);
-          secureStorage.setItem("role", res.data["role"]);
+          secureStorage.setItem("token", res.data.token);
+          secureStorage.setItem("role", res.data.role);
+          secureStorage.setItem("level", res.data.level);
           secureStorage.setItem("username", username);
           window.location.reload();
         })
         .catch((err) => {
-          switch (err.response.data["message"]) {
+          switch (err.response.data.message) {
             case "wrong password":
               setValidations({passwordWrong: true}); break;
             case "username not exist":
@@ -129,11 +130,5 @@ const styles = {
     height: 50,
     mx: 2,
     fontSize: 18
-  },
-  error: {
-    mt: 1,
-    color: "red",
-    textAlign: "center",
-    fontWeight: "bold"
   }
 }

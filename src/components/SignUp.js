@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from "react";
-import axios from "../store/axios";
-import signContext from "../store/sign-context";
-import snackbarContext from "../store/snackbar-context";
+import axios from "../stores/axios";
+import signContext from "../stores/sign-context";
+import snackbarContext from "../stores/snackbar-context";
 import {
   Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormControlLabel, Grid, Radio,
   RadioGroup, TextField, Typography
@@ -106,7 +106,7 @@ function SignUp() {
           signCtx.onNothing();
         })
         .catch((err) => {
-          switch (err.response.data["message"]) {
+          switch (err.response.data.message) {
             case "username taken":
               setValidations({usernameTaken: true}); break;
             case "email taken":
@@ -258,11 +258,5 @@ const styles = {
   },
   radio: {
     textAlign: "center"
-  },
-  error: {
-    mt: 1,
-    color: "red",
-    textAlign: "center",
-    fontWeight: "bold"
   }
 }
