@@ -18,7 +18,7 @@ function AppBarSets() {
       <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon/>}>
           <Typography>
-            CƠ BẢN
+            Cơ bản
           </Typography>
         </AccordionSummary>
 
@@ -64,7 +64,7 @@ function AppBarSets() {
       <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon/>}>
           <Typography>
-            KIẾN THỨC BỔ TRỢ
+            Kiến thức bổ trợ
           </Typography>
         </AccordionSummary>
       </Accordion>
@@ -92,7 +92,7 @@ const AccordionSummary = styled((props) => (
     {...props}
   />
 ))(({ theme }) => ({
-  backgroundColor: "#eaff8f",
+  backgroundColor: "#fcffe6",
   flexDirection: "row-reverse", "& .MuiAccordionSummary-expandIconWrapper.Mui-expanded": {transform: "rotate(90deg)"},
   "& .MuiAccordionSummary-content": {marginLeft: theme.spacing(1)}
 }));

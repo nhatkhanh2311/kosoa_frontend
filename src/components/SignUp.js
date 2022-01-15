@@ -245,7 +245,7 @@ const styles = {
     my: 0
   },
   button: {
-    marginTop: 3,
+    mt: 3,
     height: 50,
     mx: 5,
     fontSize: 18

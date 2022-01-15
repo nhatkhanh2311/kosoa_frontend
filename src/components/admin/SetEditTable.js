@@ -7,13 +7,13 @@ import {
   TableHead, TableRow, TextField, Typography
 } from "@mui/material";
 import {
-  Add as AddIcon, BorderColor as BorderColorIcon, Delete as DeleteIcon, Edit as EditIcon,
-  KeyboardArrowDown as KeyboardArrowDownIcon, KeyboardArrowUp as KeyboardArrowUpIcon
+  Add as AddIcon, BorderColor as BorderColorIcon, Cancel as CancelIcon, Delete as DeleteIcon, Edit as EditIcon,
+  KeyboardArrowDown as KeyboardArrowDownIcon, KeyboardArrowUp as KeyboardArrowUpIcon, Save as SaveIcon
 } from "@mui/icons-material";
 
 function SetEditTable() {
   const {level, category} = useParams();
-  const inputFocus = useRef(null);
+  const add = useRef(null);
   const sbCtx = useContext(snackbarContext);
 
   const [terms, setTerms] = useState([]);
@@ -26,6 +26,14 @@ function SetEditTable() {
   const [validationTerm, setValidationTerm] = useState(false);
   const [disabled, setDisabled] = useState(false);
   const [open, setOpen] = useState(-1);
+  const [termEdit, setTermEdit] = useState("");
+  const [pronunciationEdit, setPronunciationEdit] = useState("");
+  const [definitionEdit, setDefinitionEdit] = useState("");
+  const [descriptionEdit, setDescriptionEdit] = useState("");
+  const [exampleEdit, setExampleEdit] = useState("");
+  const [validationTermEdit, setValidationTermEdit] = useState(false);
+  const [disabledEdit, setDisabledEdit] = useState(false);
+  const [edit, setEdit] = useState(-1);
 
   useEffect(() => {
     getTerms();
@@ -48,7 +56,7 @@ function SetEditTable() {
 
   const getTerms = () => {
     axios
-      .post("/admin/terms/index", {
+      .post("/terms/index", {
         level: parseInt(level),
         category: category
       })
@@ -66,7 +74,7 @@ function SetEditTable() {
       setDisabled(true);
       setValidationTerm(false);
       axios
-        .post("/admin/terms/create", {
+        .post("/terms/create", {
           term: {
             term: term.trim(),
             pronunciation: pronunciation.trim(),
@@ -87,7 +95,7 @@ function SetEditTable() {
           setDescription("");
           setExample("");
           setDisabled(false);
-          inputFocus.current.focus();
+          add.current.focus();
           sbCtx.onSnackbar(`Thêm ${termsName} thành công!`, "success");
         })
         .catch((err) => {
@@ -105,9 +113,42 @@ function SetEditTable() {
     }
   }
 
+  const editTerm = (id, index) => {
+    if (termEdit.trim().length > 0) {
+      setDisabledEdit(true);
+      setValidationTermEdit(false);
+      axios
+        .post("/terms/update", {
+          id: id,
+          term: {
+            term: termEdit.trim(),
+            pronunciation: pronunciationEdit.trim(),
+            definition: definitionEdit.trim(),
+            description: descriptionEdit.trim(),
+            example: exampleEdit.trim()
+          }
+        })
+        .then((res) => {
+          let tempTerms = terms;
+          tempTerms[index] = res.data.term;
+          setTerms(tempTerms);
+          setDisabledEdit(false);
+          setEdit(-1);
+          sbCtx.onSnackbar(`Chỉnh sửa ${termsName} thành công!`, "success");
+        })
+        .catch((err) => {
+          sbCtx.onSnackbar("Đã có lỗi xảy ra!", "error");
+          setDisabled(false);
+        });
+    }
+    else {
+      setValidationTermEdit(true);
+    }
+  }
+
   const deleteTerm = (id, index, term) => {
     axios
-      .post("admin/terms/destroy", {
+      .post("/terms/destroy", {
         id: id
       })
       .then((res) => {
@@ -119,6 +160,15 @@ function SetEditTable() {
       .catch((err) => {
         sbCtx.onSnackbar("Đã có lỗi xảy ra!", "error");
       });
+  }
+
+  const setEditNumber = (index) => {
+    setEdit(index);
+    setTermEdit(terms[index].term);
+    setPronunciationEdit(terms[index].pronunciation);
+    setDefinitionEdit(terms[index].definition);
+    setDescriptionEdit(terms[index].description);
+    setExampleEdit(terms[index].example);
   }
 
   return (
@@ -161,7 +211,63 @@ function SetEditTable() {
             </TableHead>
 
             <TableBody>
-              {terms.map((term, index) => (
+              {terms.map((term, index) => edit === index ? (
+                <>
+                  <TableRow sx={styles.row}>
+                    <TableCell align="center">
+                      <Typography fontSize={15}>{index + 1}</Typography>
+                    </TableCell>
+
+                    <TableCell/>
+
+                    <TableCell align="center">
+                      <TextField type="text" variant="standard" value={termEdit}
+                                 fullWidth disabled={disabledEdit} error={validationTermEdit}
+                                 helperText={validationTermEdit && "Bạn phải điền thuật ngữ!"}
+                                 onChange={(e) => setTermEdit(e.currentTarget.value)}/>
+                    </TableCell>
+
+                    {(category === "vocabulary" || category === "grammar") && (
+                      <TableCell align="center">
+                        <TextField type="text" variant="standard" value={pronunciationEdit}
+                                   fullWidth disabled={disabledEdit}
+                                   onChange={(e) => setPronunciationEdit(e.currentTarget.value)}/>
+                      </TableCell>
+                    )}
+
+                    <TableCell align="center">
+                      <TextField type="text" variant="standard" value={definitionEdit}
+                                 fullWidth disabled={disabledEdit}
+                                 onChange={(e) => setDefinitionEdit(e.currentTarget.value)}/>
+                    </TableCell>
+
+                    <TableCell align="center">
+                      <IconButton onClick={() => editTerm(term.id, index)}>
+                        <SaveIcon color="success"/>
+                      </IconButton>
+                    </TableCell>
+
+                    <TableCell align="center">
+                      <IconButton onClick={() => setEdit(-1)}>
+                        <CancelIcon color="error"/>
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+
+                  <TableRow>
+                    <TableCell colSpan={7}>
+                      <TextField type="text" variant="standard" value={descriptionEdit}
+                                 fullWidth disabled={disabledEdit}
+                                 onChange={(e) => setDescriptionEdit(e.currentTarget.value)}/>
+
+                      <BorderColorIcon color="info"/>
+                      <TextField type="text" variant="standard" value={exampleEdit}
+                                 fullWidth disabled={disabledEdit}
+                                 onChange={(e) => setExampleEdit(e.currentTarget.value)}/>
+                    </TableCell>
+                  </TableRow>
+                </>
+              ) : (
                 <>
                   <TableRow sx={styles.row}>
                     <TableCell align="center">
@@ -189,7 +295,7 @@ function SetEditTable() {
                     </TableCell>
 
                     <TableCell align="center">
-                      <IconButton>
+                      <IconButton onClick={() => setEditNumber(index)}>
                         <EditIcon color="success"/>
                       </IconButton>
                     </TableCell>
@@ -224,7 +330,7 @@ function SetEditTable() {
             <Grid container spacing={2} px={1}>
               <Grid item xs={3.5}>
                 <TextField id="term" label={termsName} type="text" variant="standard" value={term}
-                           fullWidth disabled={disabled} ref={inputFocus} error={validationTerm}
+                           fullWidth disabled={disabled} ref={add} error={validationTerm}
                            helperText={validationTerm && "Bạn phải điền thuật ngữ!"}
                            onChange={(e) => setTerm(e.currentTarget.value)}/>
               </Grid>

@@ -1,6 +1,6 @@
 import React, {useContext, useState} from "react";
-import secureStorage from "../stores/secure-storage";
 import {useHistory} from "react-router-dom";
+import secureStorage from "../stores/secure-storage";
 import signContext from "../stores/sign-context";
 import {
   alpha, AppBar, Box, Button, InputBase, Toolbar, styled, Tooltip, IconButton, Avatar, Menu, MenuItem, Typography,
@@ -19,6 +19,11 @@ function Header() {
 
   const toSetEdit = () => {
     history.push("/admin/sets/welcome");
+    handleCloseMenu();
+  }
+
+  const toSystemSets = () => {
+    history.push("/student/sets/welcome");
     handleCloseMenu();
   }
 
@@ -64,6 +69,14 @@ function Header() {
                 <MenuItem onClick={toSetEdit}>
                   <Typography fontSize={18}>
                     Chỉnh sửa học phần
+                  </Typography>
+                </MenuItem>
+              )}
+
+              {secureStorage.getItem("role") === "student" && (
+                <MenuItem onClick={toSystemSets}>
+                  <Typography fontSize={18}>
+                    Chương trình học
                   </Typography>
                 </MenuItem>
               )}

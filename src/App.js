@@ -10,6 +10,8 @@ import SnackbarMessage from "./components/SnackbarMessage";
 import Header from "./components/Header";
 import Home from "./pages/Home";
 import SetEdit from "./pages/admin/SetEdit";
+import ChooseLevel from "./pages/student/ChooseLevel";
+import SystemSets from "./pages/student/SystemSets";
 
 function App() {
   return (
@@ -27,7 +29,7 @@ function App() {
               <Home/>
             </Route>
 
-            {/*Admin functions*/}
+            {/*Admin pages*/}
 
             <Route path="/admin/sets">
               {secureStorage.getItem("role") === "admin" ? (
@@ -35,6 +37,32 @@ function App() {
               ) : (
                 <Redirect to="/"/>
               )}
+            </Route>
+
+            {/*Student pages*/}
+
+            <Route path="/student/choose-level">
+              {secureStorage.getItem("role") === "student" ? (
+                <ChooseLevel/>
+              ) : (
+                <Redirect to="/"/>
+              )}
+            </Route>
+
+            <Route path="/student/sets">
+              {secureStorage.getItem("role") === "student" ? (
+                secureStorage.getItem("level") ? (
+                  <SystemSets/>
+                ) : (
+                  <Redirect to="/student/choose-level"/>
+                )
+              ) : (
+                <Redirect to="/"/>
+              )}
+            </Route>
+
+            <Route path="/temp">
+              <Redirect to="/student/sets/welcome"/>
             </Route>
           </Switch>
         </Router>
