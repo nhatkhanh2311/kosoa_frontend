@@ -12,7 +12,7 @@ function AppBarSets() {
 
   return (
     <Card>
-      {secureStorage.getItem("level") === 6 ? (
+      {secureStorage.getItem("level") === "6" ? (
         <>
           <ListItem button onClick={() => toSet("hiragana")}>
             <ListItemText primary="Hiragana"/>

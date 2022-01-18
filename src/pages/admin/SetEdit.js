@@ -1,6 +1,6 @@
 import React, {useEffect} from "react";
 import {Route} from "react-router-dom";
-import {Box, Grid} from "@mui/material";
+import {Box} from "@mui/material";
 
 import AppBarSets from "../../components/admin/AppBarSets";
 import SetEditWelcome from "../../components/admin/SetEditWelcome";

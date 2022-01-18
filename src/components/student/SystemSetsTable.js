@@ -134,15 +134,12 @@ function SystemSetsTable() {
             <Typography textAlign="center" fontWeight="bold" my={2}>Học</Typography>
 
             <ListItem button onClick={() => setFlashcard(true)}>
-              <ListItemText primary="Flashcard"/>
+              <ListItemText primary="Thẻ ghi nhớ"/>
             </ListItem>
 
             <Dialog open={flashcard} onClose={() => setFlashcard(false)} fullScreen>
-              <Flashcards terms={terms}/>
-
-              <DialogActions>
-                <Button onClick={() => setFlashcard(false)}>thoát</Button>
-              </DialogActions>
+              <Flashcards terms={terms} exit={() => setFlashcard(false)} system={true}
+                          setName={[5, 4, 3, 2, 1].includes(parseInt(level)) ? `${termsName} N${level}` : termsName}/>
             </Dialog>
           </Card>
         </Grid>
