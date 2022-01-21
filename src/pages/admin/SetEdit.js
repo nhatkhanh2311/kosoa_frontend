@@ -13,19 +13,29 @@ function SetEdit() {
 
   return (
     <Box display="flex" mt={2}>
-      <Box width="20%" position="sticky" mr={2}>
-        <AppBarSets/>
-      </Box>
+      <Route path="/admin/sets/welcome">
+        <Box width="20%" position="fixed">
+          <AppBarSets/>
+        </Box>
 
-      <Box width="80%">
-        <Route path="/admin/sets/welcome">
+        <Box width="20%" mr={2}/>
+
+        <Box width="80%">
           <SetEditWelcome/>
-        </Route>
+        </Box>
+      </Route>
 
-        <Route path="/admin/sets/:level/:category">
+      <Route path="/admin/sets/:level/:category">
+        <Box width="20%" position="fixed">
+          <AppBarSets/>
+        </Box>
+
+        <Box width="20%" mr={2}/>
+
+        <Box width="80%">
           <SetEditTable/>
-        </Route>
-      </Box>
+        </Box>
+      </Route>
     </Box>
   );
 }

@@ -1,6 +1,6 @@
 import React, {useEffect} from "react";
 import {Route} from "react-router-dom";
-import {Grid} from "@mui/material";
+import {Box} from "@mui/material";
 
 import AppBarSets from "../../components/student/AppBarSets";
 import SystemSetsWelcome from "../../components/student/SystemSetsWelcome";
@@ -12,21 +12,31 @@ function SystemSets() {
   }, []);
 
   return (
-    <Grid container spacing={2} mt={2}>
-      <Grid item xs={2.5}>
-        <AppBarSets/>
-      </Grid>
+    <Box display="flex" mt={2}>
+      <Route path="/student/sets/welcome">
+        <Box width="20%" position="fixed">
+          <AppBarSets/>
+        </Box>
 
-      <Grid item xs={9.5}>
-        <Route path="/student/sets/welcome">
+        <Box width="20%" mr={2}/>
+
+        <Box width="80%">
           <SystemSetsWelcome/>
-        </Route>
+        </Box>
+      </Route>
 
-        <Route path="/student/sets/:level/:category">
+      <Route path="/student/sets/:level/:category">
+        <Box width="20%" position="fixed">
+          <AppBarSets/>
+        </Box>
+
+        <Box width="20%" mr={2}/>
+
+        <Box width="80%">
           <SystemSetsTable/>
-        </Route>
-      </Grid>
-    </Grid>
+        </Box>
+      </Route>
+    </Box>
   );
 }
 

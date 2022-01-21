@@ -60,10 +60,6 @@ function App() {
                 <Redirect to="/"/>
               )}
             </Route>
-
-            <Route path="/temp">
-              <Redirect to="/student/sets/welcome"/>
-            </Route>
           </Switch>
         </Router>
       </SnackbarProvider>
