@@ -55,7 +55,7 @@ function AppBarSets() {
   );
 
   return (
-    <Card>
+    <Card elevation={6}>
       <List>
         <ListItem button selected={level === "6"} onClick={() => setOpen(open === 6 ? -1 : 6)}>
           <ListItemAvatar>

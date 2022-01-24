@@ -18,7 +18,7 @@ function ChooseLevel() {
   const setLevel = (level) => {
     setDisabled(true);
     axios
-      .post("/choose-level", {
+      .post("/users/choose-level", {
         level: level
       })
       .then((res) => {

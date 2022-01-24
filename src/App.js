@@ -9,6 +9,7 @@ import SignUp from "./components/SignUp";
 import SnackbarMessage from "./components/SnackbarMessage";
 import Header from "./components/Header";
 import Home from "./pages/Home";
+import Personal from "./pages/Personal";
 import SetEdit from "./pages/admin/SetEdit";
 import ChooseLevel from "./pages/student/ChooseLevel";
 import SystemSets from "./pages/student/SystemSets";
@@ -27,6 +28,14 @@ function App() {
           <Switch>
             <Route exact path="/">
               <Home/>
+            </Route>
+
+            <Route path="/personal">
+              {secureStorage.getItem("role") === "teacher" || secureStorage.getItem("role") === "student" ? (
+                <Personal/>
+              ) : (
+                <Redirect to="/"/>
+              )}
             </Route>
 
             {/*Admin pages*/}

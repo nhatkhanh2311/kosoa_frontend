@@ -18,7 +18,7 @@ function AppBarSets() {
   }
 
   return (
-    <Card>
+    <Card elevation={6}>
       <List>
         {secureStorage.getItem("level") === "6" ? (
           <>

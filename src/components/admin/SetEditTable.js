@@ -4,7 +4,7 @@ import axios from "../../stores/axios";
 import snackbarContext from "../../stores/snackbar-context";
 import {
   Box, Button, Card, CircularProgress, Collapse, Divider, FormControl, Grid, IconButton, Table, TableBody, TableCell,
-  TableContainer, TableHead, TableRow, TextField, Typography
+  TableContainer, TableHead, TableRow, TextField, Tooltip, Typography
 } from "@mui/material";
 import {
   Add as AddIcon, BorderColor as BorderColorIcon, Cancel as CancelIcon, Delete as DeleteIcon, Edit as EditIcon,
@@ -185,7 +185,7 @@ function SetEditTable() {
           <CircularProgress color="success"/>
         </Box>
       ) : (
-        <Card sx={styles.table}>
+        <Card elevation={6}>
           <TableContainer>
             <Table>
               <TableHead>
@@ -246,15 +246,19 @@ function SetEditTable() {
                       </TableCell>
 
                       <TableCell align="center">
-                        <IconButton onClick={() => editTerm(term.id, index)}>
-                          <SaveIcon color="success"/>
-                        </IconButton>
+                        <Tooltip title="Lưu">
+                          <IconButton onClick={() => editTerm(term.id, index)}>
+                            <SaveIcon color="success"/>
+                          </IconButton>
+                        </Tooltip>
                       </TableCell>
 
                       <TableCell align="center">
-                        <IconButton onClick={() => setEdit(-1)}>
-                          <CancelIcon color="error"/>
-                        </IconButton>
+                        <Tooltip title="Hủy">
+                          <IconButton onClick={() => setEdit(-1)}>
+                            <CancelIcon color="error"/>
+                          </IconButton>
+                        </Tooltip>
                       </TableCell>
                     </TableRow>
 
@@ -279,9 +283,11 @@ function SetEditTable() {
                       </TableCell>
 
                       <TableCell align="center">
-                        <IconButton onClick={() => setOpen(open === index ? -1 : index)}>
-                          {open === index ? <KeyboardArrowUpIcon/> : <KeyboardArrowDownIcon/>}
-                        </IconButton>
+                        <Tooltip title="Xem thêm">
+                          <IconButton onClick={() => setOpen(open === index ? -1 : index)}>
+                            {open === index ? <KeyboardArrowUpIcon/> : <KeyboardArrowDownIcon/>}
+                          </IconButton>
+                        </Tooltip>
                       </TableCell>
 
                       <TableCell align="center">
@@ -299,15 +305,19 @@ function SetEditTable() {
                       </TableCell>
 
                       <TableCell align="center">
-                        <IconButton onClick={() => setEditNumber(index)}>
-                          <EditIcon color="success"/>
-                        </IconButton>
+                        <Tooltip title="Sửa">
+                          <IconButton onClick={() => setEditNumber(index)}>
+                            <EditIcon color="success"/>
+                          </IconButton>
+                        </Tooltip>
                       </TableCell>
 
                       <TableCell align="center">
-                        <IconButton onClick={() => deleteTerm(term.id, index, term.term)}>
-                          <DeleteIcon color="error"/>
-                        </IconButton>
+                        <Tooltip title="Xóa">
+                          <IconButton onClick={() => deleteTerm(term.id, index, term.term)}>
+                            <DeleteIcon color="error"/>
+                          </IconButton>
+                        </Tooltip>
                       </TableCell>
                     </TableRow>
 
@@ -380,9 +390,6 @@ function SetEditTable() {
 export default SetEditTable;
 
 const styles = {
-  table: {
-    backgroundColor: "#fcffe6"
-  },
   row: {
     borderBottom: "none"
   },

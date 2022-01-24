@@ -4,9 +4,12 @@ import secureStorage from "../stores/secure-storage";
 import signContext from "../stores/sign-context";
 import {
   alpha, AppBar, Box, Button, InputBase, Toolbar, styled, Tooltip, IconButton, Avatar, Menu, MenuItem, Typography,
-  Divider
+  Divider, Fade
 } from "@mui/material";
-import {Login as LoginIcon, Logout as LogoutIcon, Search as SearchIcon} from "@mui/icons-material";
+import {
+  LocalLibrary as LocalLibraryIcon, Login as LoginIcon, Logout as LogoutIcon, ManageAccounts as ManageAccountsIcon,
+  Search as SearchIcon
+} from "@mui/icons-material";
 
 function Header() {
   const history = useHistory();
@@ -16,6 +19,11 @@ function Header() {
 
   const handleOpenMenu = (e) => setAnchorMenu(e.currentTarget);
   const handleCloseMenu = () => setAnchorMenu(null);
+
+  const toPersonal = () => {
+    history.push("/personal");
+    handleCloseMenu();
+  }
 
   const toSetEdit = () => {
     history.push("/admin/sets/welcome");
@@ -33,7 +41,7 @@ function Header() {
   }
 
   return (
-    <AppBar position="sticky" color="success" sx={styles.header}>
+    <AppBar position="sticky" color="success">
       <Toolbar>
         <Box sx={styles.boxLeft}>
           <Search>
@@ -64,7 +72,7 @@ function Header() {
               </IconButton>
             </Tooltip>
 
-            <Menu open={!!anchorMenu} onClose={handleCloseMenu} anchorEl={anchorMenu}>
+            <Menu open={!!anchorMenu} onClose={handleCloseMenu} anchorEl={anchorMenu} TransitionComponent={Fade}>
               {secureStorage.getItem("role") === "admin" && (
                 <MenuItem onClick={toSetEdit}>
                   <Typography fontSize={18}>
@@ -74,11 +82,21 @@ function Header() {
               )}
 
               {secureStorage.getItem("role") === "student" && (
-                <MenuItem onClick={toSystemSets}>
-                  <Typography fontSize={18}>
-                    Chương trình học
-                  </Typography>
-                </MenuItem>
+                <>
+                  <MenuItem onClick={toPersonal}>
+                    <ManageAccountsIcon/>
+                    <Typography fontSize={18} ml={1}>
+                      Thông tin cá nhân
+                    </Typography>
+                  </MenuItem>
+
+                  <MenuItem onClick={toSystemSets}>
+                    <LocalLibraryIcon/>
+                    <Typography fontSize={18} ml={1} mt={1}>
+                      Chương trình học
+                    </Typography>
+                  </MenuItem>
+                </>
               )}
 
               <Divider/>
@@ -100,8 +118,6 @@ function Header() {
 export default Header;
 
 const styles = {
-  header: {
-  },
   boxLeft: {
     flexGrow: 1,
     display: "flex"

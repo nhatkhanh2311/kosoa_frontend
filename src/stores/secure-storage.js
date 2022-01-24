@@ -1,6 +1,5 @@
 import SecureStorage from "secure-web-storage";
-
-const CryptoJS = require("crypto-js");
+import CryptoJS from "crypto-js";
 
 const SECRET_KEY = "kosoa_secret_key";
 

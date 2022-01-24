@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from "react";
 import ReactCardFlip from "react-card-flip";
 import {
-  Box, Button, Card, Checkbox, DialogContent, FormControlLabel, Grid, IconButton, LinearProgress, ToggleButton,
-  ToggleButtonGroup, Typography
+  Box, Button, Card, Checkbox, DialogContent, FormControlLabel, Grid, IconButton, Slider, ToggleButton,
+  ToggleButtonGroup, Tooltip, Typography
 } from "@mui/material";
 import {
   KeyboardArrowLeft as KeyboardArrowLeftIcon, KeyboardArrowRight as KeyboardArrowRightIcon,
@@ -37,6 +37,11 @@ function Flashcards(props) {
     setIsFlipped(false);
   }
 
+  const toCard = (e, value) => {
+    setOrder(value - 1);
+    setIsFlipped(false);
+  }
+
   const shuffle = () => {
     if (!isShuffled) {
       let tempTerms = [...terms], currentIndex = tempTerms.length, randomIndex;
@@ -57,7 +62,7 @@ function Flashcards(props) {
   }
 
   return (
-    <DialogContent>
+    <DialogContent sx={styles.content}>
       <Button startIcon={<KeyboardArrowLeftIcon/>} variant="text" color="success"
               onClick={() => props.exit()}>
         quay lại
@@ -65,7 +70,7 @@ function Flashcards(props) {
 
       <Grid container mt={5}>
         <Grid item xs={2}>
-          <Card sx={styles.bar}>
+          <Card elevation={6} sx={styles.bar}>
             <Box mt={3} display="flex" justifyContent="center">
               <img src={flashCardIcon} alt="Flash Card" height={30}/>
               <Typography fontWeight="bold" fontSize={20} ml={1}>
@@ -111,7 +116,7 @@ function Flashcards(props) {
               <Box display="flex" justifyContent="center">
                 {terms.map((term, index) => index === order && (
                   <ReactCardFlip isFlipped={isFlipped}>
-                    <Card onClick={() => setIsFlipped(!isFlipped)} sx={styles.card}>
+                    <Card elevation={6} onClick={() => setIsFlipped(!isFlipped)} sx={styles.card}>
                       <Typography textAlign="center" fontSize={50}>
                         {frontTerm && term.term}
                         {frontTerm && <br/>}
@@ -121,7 +126,7 @@ function Flashcards(props) {
                       </Typography>
                     </Card>
 
-                    <Card onClick={() => setIsFlipped(!isFlipped)} sx={styles.card}>
+                    <Card elevation={6} onClick={() => setIsFlipped(!isFlipped)} sx={styles.card}>
                       <Typography textAlign="center" fontSize={50}>
                         {backTerm && term.term}
                         {backTerm && <br/>}
@@ -144,9 +149,11 @@ function Flashcards(props) {
 
               <Grid container mt={5}>
                 <Grid item xs={3} display="flex" justifyContent="center">
-                  <IconButton disabled={order <= 0} onClick={toLeft}>
-                    <KeyboardArrowLeftIcon/>
-                  </IconButton>
+                  <Tooltip title="Thẻ trước">
+                    <IconButton disabled={order <= 0} onClick={toLeft}>
+                      <KeyboardArrowLeftIcon/>
+                    </IconButton>
+                  </Tooltip>
                 </Grid>
 
                 <Grid item xs={6} display="flex" justifyContent="center" alignItems="center">
@@ -156,21 +163,24 @@ function Flashcards(props) {
                 </Grid>
 
                 <Grid item xs={3} display="flex" justifyContent="center">
-                  <IconButton disabled={order >= terms.length - 1} onClick={toRight}>
-                    <KeyboardArrowRightIcon/>
-                  </IconButton>
+                  <Tooltip title="Thẻ sau">
+                    <IconButton disabled={order >= terms.length - 1} onClick={toRight}>
+                      <KeyboardArrowRightIcon/>
+                    </IconButton>
+                  </Tooltip>
                 </Grid>
               </Grid>
 
               <Box display="flex" justifyContent="center">
-                <LinearProgress variant="determinate" value={(order + 1) / terms.length * 100} sx={styles.progress}/>
+                <Slider marks size="small" valueLabelDisplay="auto" value={order + 1} min={1} max={terms.length}
+                        sx={styles.progress} onChange={toCard}/>
               </Box>
             </Box>
           </Grid>
         )}
 
         <Grid item xs={2}>
-          <Card sx={styles.bar}>
+          <Card elevation={6} sx={styles.bar}>
             <Box mt={3} display="flex" justifyContent="center">
               <TuneIcon/>
               <Typography fontWeight="bold" fontSize={18} ml={1}>
@@ -213,6 +223,9 @@ function Flashcards(props) {
 export default Flashcards;
 
 const styles = {
+  content: {
+    backgroundColor: "#fcffe6"
+  },
   bar: {
     height: 600
   },
@@ -222,7 +235,6 @@ const styles = {
   card: {
     height: 400,
     width: 600,
-    backgroundColor: "#fcffe6",
     display: "flex",
     justifyContent: "center",
     alignItems: "center"

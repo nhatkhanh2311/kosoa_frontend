@@ -1,13 +1,14 @@
 import React, {useContext, useEffect, useState} from "react";
-import {useParams} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import axios from "../../stores/axios";
 import snackbarContext from "../../stores/snackbar-context";
 import {
   Box, Card, CircularProgress, Collapse, Dialog, Grid, IconButton, ListItem, ListItemAvatar, ListItemText, Table,
-  TableBody, TableCell, TableContainer, TableHead, TableRow, Typography
+  TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography
 } from "@mui/material";
 import {
-  BorderColor as BorderColorIcon, KeyboardArrowDown as KeyboardArrowDownIcon, KeyboardArrowUp as KeyboardArrowUpIcon
+  BorderColor as BorderColorIcon, KeyboardArrowDown as KeyboardArrowDownIcon, KeyboardArrowUp as KeyboardArrowUpIcon,
+  Launch as LaunchIcon
 } from "@mui/icons-material";
 import flashCardIcon from "../../assets/icons/flash-card.png";
 
@@ -63,8 +64,8 @@ function SystemSetsTable() {
         </Box>
       ) : (
         <Grid container spacing={2}>
-          <Grid item xs={9}>
-            <Card sx={styles.table}>
+          <Grid item xs={9.5}>
+            <Card elevation={6}>
               <TableContainer>
                 <Table>
                   <TableHead>
@@ -86,6 +87,8 @@ function SystemSetsTable() {
                       <TableCell>
                         <Typography fontSize={20} textAlign="center" fontWeight="medium">Định nghĩa</Typography>
                       </TableCell>
+
+                      <TableCell width={10}/>
                     </TableRow>
                   </TableHead>
 
@@ -98,9 +101,11 @@ function SystemSetsTable() {
                           </TableCell>
 
                           <TableCell align="center">
-                            <IconButton onClick={() => setOpen(open === index ? -1 : index)}>
-                              {open === index ? <KeyboardArrowUpIcon/> : <KeyboardArrowDownIcon/>}
-                            </IconButton>
+                            <Tooltip title="Xem thêm">
+                              <IconButton onClick={() => setOpen(open === index ? -1 : index)}>
+                                {open === index ? <KeyboardArrowUpIcon/> : <KeyboardArrowDownIcon/>}
+                              </IconButton>
+                            </Tooltip>
                           </TableCell>
 
                           <TableCell align="center">
@@ -116,10 +121,18 @@ function SystemSetsTable() {
                           <TableCell align="center">
                             <Typography fontSize={15}>{term.definition}</Typography>
                           </TableCell>
+
+                          <TableCell align="center">
+                            <Tooltip title="Chi tiết">
+                              <IconButton component={Link} to="/" target="_blank">
+                                <LaunchIcon color="success"/>
+                              </IconButton>
+                            </Tooltip>
+                          </TableCell>
                         </TableRow>
 
                         <TableRow>
-                          <TableCell colSpan={5} sx={styles.more}>
+                          <TableCell colSpan={6} sx={styles.more}>
                             <Collapse in={open === index} unmountOnExit>
                               <Typography fontSize={15} maxWidth mb={1}>{term.description}</Typography>
                               <Typography fontSize={15}><BorderColorIcon color="info"/>{term.example}</Typography>
@@ -134,8 +147,8 @@ function SystemSetsTable() {
             </Card>
           </Grid>
 
-          <Grid item xs={3}>
-            <Card>
+          <Grid item xs={2.5}>
+            <Card elevation={6}>
               <Typography fontSize={18} my={2} ml={1}>HỌC</Typography>
 
               <ListItem button disabled={terms.length === 0} onClick={() => setFlashcard(true)}>
@@ -160,9 +173,6 @@ function SystemSetsTable() {
 export default SystemSetsTable;
 
 const styles = {
-  table: {
-    backgroundColor: "#fcffe6"
-  },
   row: {
     borderBottom: "none"
   },
