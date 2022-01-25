@@ -3,10 +3,10 @@ import {Route} from "react-router-dom";
 import {Box} from "@mui/material";
 
 import AppBarSets from "../../components/student/AppBarSets";
-import SystemSetsWelcome from "../../components/student/SystemSetsWelcome";
-import SystemSetsTable from "../../components/student/SystemSetsTable";
+import SystemSetWelcome from "../../components/student/SystemSetWelcome";
+import SystemSetTable from "../../components/student/SystemSetTable";
 
-function SystemSets() {
+function SystemSet() {
   useEffect(() => {
     document.title = "Học phần - KoSoA";
   }, []);
@@ -21,7 +21,7 @@ function SystemSets() {
         <Box width="20%" mr={2}/>
 
         <Box width="80%">
-          <SystemSetsWelcome/>
+          <SystemSetWelcome/>
         </Box>
       </Route>
 
@@ -33,11 +33,11 @@ function SystemSets() {
         <Box width="20%" mr={2}/>
 
         <Box width="80%">
-          <SystemSetsTable/>
+          <SystemSetTable/>
         </Box>
       </Route>
     </Box>
   );
 }
 
-export default SystemSets;
+export default SystemSet;

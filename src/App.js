@@ -10,9 +10,10 @@ import SnackbarMessage from "./components/SnackbarMessage";
 import Header from "./components/Header";
 import Home from "./pages/Home";
 import Personal from "./pages/Personal";
+import SystemTerm from "./pages/SystemTerm";
 import SetEdit from "./pages/admin/SetEdit";
 import ChooseLevel from "./pages/student/ChooseLevel";
-import SystemSets from "./pages/student/SystemSets";
+import SystemSet from "./pages/student/SystemSet";
 
 function App() {
   return (
@@ -33,6 +34,14 @@ function App() {
             <Route path="/personal">
               {secureStorage.getItem("role") === "teacher" || secureStorage.getItem("role") === "student" ? (
                 <Personal/>
+              ) : (
+                <Redirect to="/"/>
+              )}
+            </Route>
+
+            <Route path="/term/:termId">
+              {secureStorage.getItem("role") === "teacher" || secureStorage.getItem("role") === "student" ? (
+                <SystemTerm/>
               ) : (
                 <Redirect to="/"/>
               )}
@@ -61,7 +70,7 @@ function App() {
             <Route path="/student/sets">
               {secureStorage.getItem("role") === "student" ? (
                 secureStorage.getItem("level") ? (
-                  <SystemSets/>
+                  <SystemSet/>
                 ) : (
                   <Redirect to="/student/choose-level"/>
                 )

@@ -7,8 +7,9 @@ import {
   TableContainer, TableHead, TableRow, TextField, Tooltip, Typography
 } from "@mui/material";
 import {
-  Add as AddIcon, BorderColor as BorderColorIcon, Cancel as CancelIcon, Delete as DeleteIcon, Edit as EditIcon,
-  KeyboardArrowDown as KeyboardArrowDownIcon, KeyboardArrowUp as KeyboardArrowUpIcon, Save as SaveIcon
+  Add as AddIcon, BorderColor as BorderColorIcon, Cancel as CancelIcon, Delete as DeleteIcon,
+  Description as DescriptionIcon, Edit as EditIcon, KeyboardArrowDown as KeyboardArrowDownIcon,
+  KeyboardArrowUp as KeyboardArrowUpIcon, Save as SaveIcon
 } from "@mui/icons-material";
 
 function SetEditTable() {
@@ -264,14 +265,19 @@ function SetEditTable() {
 
                     <TableRow>
                       <TableCell colSpan={7}>
-                        <TextField type="text" variant="standard" value={descriptionEdit}
-                                   fullWidth disabled={disabledEdit}
-                                   onChange={(e) => setDescriptionEdit(e.currentTarget.value)}/>
+                        <Box display="flex" mb={1}>
+                          <DescriptionIcon color="success"/>
+                          <TextField type="text" variant="standard" value={descriptionEdit}
+                                     fullWidth disabled={disabledEdit} sx={{ml: 0.5}}
+                                     onChange={(e) => setDescriptionEdit(e.currentTarget.value)}/>
+                        </Box>
 
-                        <BorderColorIcon color="info"/>
-                        <TextField type="text" variant="standard" value={exampleEdit}
-                                   fullWidth disabled={disabledEdit}
-                                   onChange={(e) => setExampleEdit(e.currentTarget.value)}/>
+                        <Box display="flex" mb={1}>
+                          <BorderColorIcon color="info"/>
+                          <TextField type="text" variant="standard" value={exampleEdit}
+                                     fullWidth disabled={disabledEdit} sx={{ml: 0.5}}
+                                     onChange={(e) => setExampleEdit(e.currentTarget.value)}/>
+                        </Box>
                       </TableCell>
                     </TableRow>
                   </>
@@ -324,8 +330,15 @@ function SetEditTable() {
                     <TableRow>
                       <TableCell colSpan={7} sx={styles.more}>
                         <Collapse in={open === index} unmountOnExit>
-                          <Typography fontSize={15} maxWidth mb={1}>{term.description}</Typography>
-                          <Typography fontSize={15}><BorderColorIcon color="info"/>{term.example}</Typography>
+                          <Box display="flex" mb={1}>
+                            <DescriptionIcon color="success"/>
+                            <Typography fontSize={16} ml={0.5}>{term.description}</Typography>
+                          </Box>
+
+                          <Box display="flex" mb={1}>
+                            <BorderColorIcon color="info"/>
+                            <Typography fontSize={16} ml={0.5}>{term.example}</Typography>
+                          </Box>
                         </Collapse>
                       </TableCell>
                     </TableRow>
@@ -365,7 +378,7 @@ function SetEditTable() {
               </Grid>
 
               <Grid item xs={12} px={1}>
-                <TextField id="description" label="Bổ sung" type="text" variant="standard" value={description}
+                <TextField id="description" label="Giải thích" type="text" variant="standard" value={description}
                            fullWidth disabled={disabled}
                            onChange={(e) => setDescription(e.currentTarget.value)}/>
               </Grid>

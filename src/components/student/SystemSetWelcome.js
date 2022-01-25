@@ -1,10 +1,10 @@
 import React from "react";
 import {Typography} from "@mui/material";
 
-function SystemSetsWelcome() {
+function SystemSetWelcome() {
   return (
     <Typography>Welcome</Typography>
   );
 }
 
-export default SystemSetsWelcome;
+export default SystemSetWelcome;

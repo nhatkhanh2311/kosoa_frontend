@@ -7,14 +7,14 @@ import {
   TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography
 } from "@mui/material";
 import {
-  BorderColor as BorderColorIcon, KeyboardArrowDown as KeyboardArrowDownIcon, KeyboardArrowUp as KeyboardArrowUpIcon,
-  Launch as LaunchIcon
+  BorderColor as BorderColorIcon, Description as DescriptionIcon, KeyboardArrowDown as KeyboardArrowDownIcon,
+  KeyboardArrowUp as KeyboardArrowUpIcon, Launch as LaunchIcon
 } from "@mui/icons-material";
 import flashCardIcon from "../../assets/icons/flash-card.png";
 
 import Flashcards from "./Flashcards";
 
-function SystemSetsTable() {
+function SystemSetTable() {
   const {level, category} = useParams();
   const sbCtx = useContext(snackbarContext);
 
@@ -97,7 +97,7 @@ function SystemSetsTable() {
                       <>
                         <TableRow sx={styles.row}>
                           <TableCell align="center">
-                            <Typography fontSize={15}>{index + 1}</Typography>
+                            <Typography fontSize={16}>{index + 1}</Typography>
                           </TableCell>
 
                           <TableCell align="center">
@@ -109,22 +109,22 @@ function SystemSetsTable() {
                           </TableCell>
 
                           <TableCell align="center">
-                            <Typography fontSize={15}>{term.term}</Typography>
+                            <Typography fontSize={16}>{term.term}</Typography>
                           </TableCell>
 
                           {(category === "vocabulary" || category === "grammar") && (
                             <TableCell align="center">
-                              <Typography fontSize={15}>{term.pronunciation}</Typography>
+                              <Typography fontSize={16}>{term.pronunciation}</Typography>
                             </TableCell>
                           )}
 
                           <TableCell align="center">
-                            <Typography fontSize={15}>{term.definition}</Typography>
+                            <Typography fontSize={16}>{term.definition}</Typography>
                           </TableCell>
 
                           <TableCell align="center">
                             <Tooltip title="Chi tiết">
-                              <IconButton component={Link} to="/" target="_blank">
+                              <IconButton component={Link} to={`/term/${term.id}`} target="_blank">
                                 <LaunchIcon color="success"/>
                               </IconButton>
                             </Tooltip>
@@ -134,8 +134,15 @@ function SystemSetsTable() {
                         <TableRow>
                           <TableCell colSpan={6} sx={styles.more}>
                             <Collapse in={open === index} unmountOnExit>
-                              <Typography fontSize={15} maxWidth mb={1}>{term.description}</Typography>
-                              <Typography fontSize={15}><BorderColorIcon color="info"/>{term.example}</Typography>
+                              <Box display="flex" mb={1}>
+                                <DescriptionIcon color="success"/>
+                                <Typography fontSize={16} ml={0.5}>{term.description}</Typography>
+                              </Box>
+
+                              <Box display="flex" mb={1}>
+                                <BorderColorIcon color="info"/>
+                                <Typography fontSize={16} ml={0.5}>{term.example}</Typography>
+                              </Box>
                             </Collapse>
                           </TableCell>
                         </TableRow>
@@ -170,7 +177,7 @@ function SystemSetsTable() {
   );
 }
 
-export default SystemSetsTable;
+export default SystemSetTable;
 
 const styles = {
   row: {
