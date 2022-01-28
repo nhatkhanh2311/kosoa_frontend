@@ -1,7 +1,8 @@
 import React from "react";
-import {useHistory, useParams} from "react-router-dom";
+import {Link, useHistory, useParams} from "react-router-dom";
 import secureStorage from "../../stores/secure-storage";
-import {Card, List, ListItem, ListItemAvatar, ListItemText} from "@mui/material";
+import {Box, Card, List, ListItem, ListItemAvatar, ListItemText, Typography} from "@mui/material";
+import {ChangeCircle as ChangeCircleIcon} from "@mui/icons-material";
 import hiraganaIcon from "../../assets/icons/hiragana.png";
 import katakanaIcon from "../../assets/icons/katakana.png";
 import characterIcon from "../../assets/icons/character.png";
@@ -19,6 +20,15 @@ function AppBarSets() {
 
   return (
     <Card elevation={6}>
+      <Typography textAlign="center" fontSize={25} fontWeight="bold" mt={2}>
+        {secureStorage.getItem("level") === "6" ? "Căn bản" :
+          secureStorage.getItem("level") === "5" ? "N5" :
+            secureStorage.getItem("level") === "4" ? "N4" :
+              secureStorage.getItem("level") === "3" ? "N3" :
+                secureStorage.getItem("level") === "2" ? "N2" :
+                  secureStorage.getItem("level") === "1" && "N1"}
+      </Typography>
+
       <List>
         {secureStorage.getItem("level") === "6" ? (
           <>
@@ -74,6 +84,14 @@ function AppBarSets() {
           </>
         )}
       </List>
+
+      <Box component={Link} to="/student/choose-level" display="flex" justifyContent="right" alignItems="center"
+           mt={2} mb={1} sx={styles.change}>
+        <ChangeCircleIcon/>
+        <Typography fontSize={20} mx={0.5}>
+          Thay đổi cấp độ học
+        </Typography>
+      </Box>
     </Card>
   );
 }
@@ -87,5 +105,8 @@ const styles = {
   },
   secondary: {
     fontSize: 18
+  },
+  change: {
+    textDecoration: "none"
   }
 }

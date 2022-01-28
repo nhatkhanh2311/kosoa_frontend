@@ -5,16 +5,20 @@ import {
   ToggleButtonGroup, Tooltip, Typography
 } from "@mui/material";
 import {
-  KeyboardArrowLeft as KeyboardArrowLeftIcon, KeyboardArrowRight as KeyboardArrowRightIcon,
+  Keyboard as KeyboardIcon, KeyboardArrowLeft as KeyboardArrowLeftIcon, KeyboardArrowRight as KeyboardArrowRightIcon,
   RestartAlt as RestartAltIcon, Shuffle as ShuffleIcon, Tune as TuneIcon
 } from "@mui/icons-material";
 import flashCardIcon from "../../assets/icons/flash-card.png";
+import logoLime from "../../assets/logo/logo-lime.png";
+
+
 
 function Flashcards(props) {
   const [terms, setTerms] = useState([]);
   const [order, setOrder] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [isShuffled, setIsShuffled] = useState(false);
+  const [isKeyboardActive, setIsKeyboardActive] = useState(false);
   const [frontTerm, setFrontTerm] = useState(true);
   const [frontPronunciation, setFrontPronunciation] = useState(false);
   const [frontDefinition, setFrontDefinition] = useState(false);
@@ -40,6 +44,15 @@ function Flashcards(props) {
   const toCard = (e, value) => {
     setOrder(value - 1);
     setIsFlipped(false);
+  }
+
+  const handleKeyPress = (e) => {
+    switch (e.key) {
+      case "ArrowLeft": if (order > 0) toLeft(); break;
+      case "ArrowRight": if (order < terms.length - 1) toRight(); break;
+      case "ArrowUp":
+      case "ArrowDown": setIsFlipped(!isFlipped);
+    }
   }
 
   const shuffle = () => {
@@ -87,24 +100,34 @@ function Flashcards(props) {
             </Typography>
 
             {props.system && (
-              <Typography textAlign="center" fontWeight="bold" fontSize={18} color="green" ml={1}>
-                KoSoA
-              </Typography>
+              <Box display="flex" justifyContent="center" height={40} mt={1}>
+                <img src={logoLime} alt="logo"/>
+              </Box>
             )}
 
             <Box mt={12} display="flex" justifyContent="center">
               <ToggleButton color="success" value="check" selected={isShuffled}
                             sx={styles.barButton} onChange={shuffle}>
-                <ShuffleIcon/>
+                <ShuffleIcon sx={{mr: 1}}/>
                 trộn thẻ
               </ToggleButton>
             </Box>
 
             <Box mt={1} display="flex" justifyContent="center">
-              <ToggleButton color="success" disabled={order === 0} value="check" selected={order !== 0}
+              <ToggleButton color="success" disabled={order === 0} value="check"
                             sx={styles.barButton} onClick={() => setOrder(0)}>
-                <RestartAltIcon/>
+                <RestartAltIcon sx={{mr: 1}}/>
                 bắt đầu lại
+              </ToggleButton>
+            </Box>
+
+            <Box mt={1} display="flex" justifyContent="center">
+              <ToggleButton color="success" value="check" selected={isKeyboardActive}
+                            sx={styles.barButton} onKeyDown={handleKeyPress}
+                            onFocus={() => setIsKeyboardActive(true)}
+                            onBlur={() => setIsKeyboardActive(false)}>
+                <KeyboardIcon sx={{mr: 1}}/>
+                ấn phím tắt
               </ToggleButton>
             </Box>
           </Card>
@@ -115,7 +138,7 @@ function Flashcards(props) {
             <Box display="block" mx="auto" height={400} width={500}>
               <Box display="flex" justifyContent="center">
                 {terms.map((term, index) => index === order && (
-                  <ReactCardFlip isFlipped={isFlipped}>
+                  <ReactCardFlip isFlipped={isFlipped} flipDirection="vertical">
                     <Card elevation={6} onClick={() => setIsFlipped(!isFlipped)} sx={styles.card}>
                       <Typography textAlign="center" fontSize={50}>
                         {frontTerm && term.term}

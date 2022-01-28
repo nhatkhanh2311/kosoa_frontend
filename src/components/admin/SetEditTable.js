@@ -56,6 +56,10 @@ function SetEditTable() {
     setDisabled(false);
   }, [level, category]);
 
+  useEffect(() => {
+    add.current.focus();
+  }, [disabled]);
+
   const getTerms = () => {
     setLoading(true);
     axios
@@ -99,7 +103,6 @@ function SetEditTable() {
           setDescription("");
           setExample("");
           setDisabled(false);
-          add.current.focus();
           sbCtx.onSnackbar(`Thêm ${termsName} thành công!`, "success");
         })
         .catch((err) => {

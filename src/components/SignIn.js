@@ -56,7 +56,6 @@ function SignIn() {
           secureStorage.setItem("token", res.data.token);
           secureStorage.setItem("role", res.data.role);
           secureStorage.setItem("level", res.data.level);
-          secureStorage.setItem("username", username);
           window.location.reload();
         })
         .catch((err) => {

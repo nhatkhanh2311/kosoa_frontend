@@ -3,7 +3,7 @@ import {useHistory} from "react-router-dom";
 import axios from "../../stores/axios";
 import secureStorage from "../../stores/secure-storage";
 import snackbarContext from "../../stores/snackbar-context";
-import {Button, Card, CardContent, Stack, Typography} from "@mui/material";
+import {Box, Button, Card, CardContent, Typography} from "@mui/material";
 
 function ChooseLevel() {
   const history = useHistory();
@@ -22,8 +22,8 @@ function ChooseLevel() {
         level: level
       })
       .then((res) => {
-        secureStorage.setItem("level", level);
-        history.push("/temp");
+        secureStorage.setItem("level", `${level}`);
+        history.push("/student/sets/welcome");
       })
       .catch((err) => {
         setDisabled(false);
@@ -34,13 +34,13 @@ function ChooseLevel() {
   return (
     <>
       <Typography textAlign="center" fontSize={30} my={4}>
-        Chọn cấp độ bạn muốn học
+        Chọn cấp độ bạn đang học
       </Typography>
 
-      <Stack direction="row" justifyContent="center" alignItems="center" spacing={3}>
+      <Box textAlign="center">
         <Card sx={styles.card}>
           <CardContent>
-            <Typography textAlign="center" fontSize={30} mt={3}>Căn bản</Typography>
+            <Typography fontSize={30} mt={3}>Căn bản</Typography>
 
             <Button disabled={disabled} variant="contained" color="success" sx={styles.button}
                     onClick={() => setLevel(6)}>
@@ -51,7 +51,7 @@ function ChooseLevel() {
 
         <Card sx={styles.card}>
           <CardContent>
-            <Typography textAlign="center" fontSize={30} mt={3}>N5</Typography>
+            <Typography fontSize={30} mt={3}>N5</Typography>
 
             <Button disabled={disabled} variant="contained" color="success" sx={styles.button}
                     onClick={() => setLevel(5)}>
@@ -62,7 +62,7 @@ function ChooseLevel() {
 
         <Card sx={styles.card}>
           <CardContent>
-            <Typography textAlign="center" fontSize={30} mt={3}>N4</Typography>
+            <Typography fontSize={30} mt={3}>N4</Typography>
 
             <Button disabled={disabled} variant="contained" color="success" sx={styles.button}
                     onClick={() => setLevel(4)}>
@@ -73,7 +73,7 @@ function ChooseLevel() {
 
         <Card sx={styles.card}>
           <CardContent>
-            <Typography textAlign="center" fontSize={30} mt={3}>N3</Typography>
+            <Typography fontSize={30} mt={3}>N3</Typography>
 
             <Button disabled={disabled} variant="contained" color="success" sx={styles.button}
                     onClick={() => setLevel(3)}>
@@ -84,7 +84,7 @@ function ChooseLevel() {
 
         <Card sx={styles.card}>
           <CardContent>
-            <Typography textAlign="center" fontSize={30} mt={3}>N2</Typography>
+            <Typography fontSize={30} mt={3}>N2</Typography>
 
             <Button disabled={disabled} variant="contained" color="success" sx={styles.button}
                     onClick={() => setLevel(2)}>
@@ -95,7 +95,7 @@ function ChooseLevel() {
 
         <Card sx={styles.card}>
           <CardContent>
-            <Typography textAlign="center" fontSize={30} mt={3}>N1</Typography>
+            <Typography fontSize={30} mt={3}>N1</Typography>
 
             <Button disabled={disabled} variant="contained" color="success" sx={styles.button}
                     onClick={() => setLevel(1)}>
@@ -103,7 +103,7 @@ function ChooseLevel() {
             </Button>
           </CardContent>
         </Card>
-      </Stack>
+      </Box>
     </>
   );
 }
@@ -112,11 +112,13 @@ export default ChooseLevel;
 
 const styles = {
   card: {
+    mx: 2,
+    my: 2,
     height: 200,
-    width: 200
+    width: 400,
+    display: "inline-block"
   },
   button: {
-    mt: 5,
-    mx: 6
+    mt: 2
   }
 }

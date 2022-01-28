@@ -1,5 +1,6 @@
-import React, {useContext, useState} from "react";
-import {useHistory} from "react-router-dom";
+import React, {useContext, useEffect, useState} from "react";
+import {Link, useHistory} from "react-router-dom";
+import axios from "../stores/axios";
 import secureStorage from "../stores/secure-storage";
 import signContext from "../stores/sign-context";
 import {
@@ -10,15 +11,29 @@ import {
   LocalLibrary as LocalLibraryIcon, Login as LoginIcon, Logout as LogoutIcon, ManageAccounts as ManageAccountsIcon,
   Search as SearchIcon
 } from "@mui/icons-material";
+import logoWhite from "../assets/logo/logo-white.png";
 
 function Header() {
   const history = useHistory();
   const signCtx = useContext(signContext);
 
+  const [avatar, setAvatar] = useState("");
   const [anchorMenu, setAnchorMenu] = useState(null);
 
   const handleOpenMenu = (e) => setAnchorMenu(e.currentTarget);
   const handleCloseMenu = () => setAnchorMenu(null);
+
+  useEffect(() => {
+    getAvatar();
+  }, []);
+
+  const getAvatar = () => {
+    axios
+      .get("/users/personal")
+      .then((res) => {
+        setAvatar(res.data.user.avatar);
+      });
+  }
 
   const toPersonal = () => {
     history.push("/personal");
@@ -41,19 +56,27 @@ function Header() {
   }
 
   return (
-    <AppBar position="sticky" color="success">
+    <AppBar position="sticky" style={{backgroundColor: "#7cb305"}}>
       <Toolbar>
-        <Box sx={styles.boxLeft}>
-          <Search>
-            <SearchIconWrapper>
-              <SearchIcon/>
-            </SearchIconWrapper>
-            <StyledInputBase placeholder="Tìm kiếm..." inputProps={{"aria-label": "search"}}/>
-          </Search>
+        <Box display="flex" flexGrow={1} alignItems="center">
+          <Box>
+            <Link to="/">
+              <img src={logoWhite} alt="logo" height={50}/>
+            </Link>
+          </Box>
+
+          <Box ml={5}>
+            <Search>
+              <SearchIconWrapper>
+                <SearchIcon/>
+              </SearchIconWrapper>
+              <StyledInputBase placeholder="Tìm kiếm..." inputProps={{"aria-label": "search"}}/>
+            </Search>
+          </Box>
         </Box>
 
         {!secureStorage.getItem("token") ? (
-          <Box sx={styles.boxRight}>
+          <Box display="flex" flexGrow={0}>
             <Button variant="contained" color="warning" sx={styles.button} onClick={signCtx.onSignUp}>
               đăng ký
             </Button>
@@ -63,12 +86,10 @@ function Header() {
             </Button>
           </Box>
         ) : (
-          <Box sx={styles.boxRight}>
+          <Box display="flex" flexGrow={0}>
             <Tooltip title="Mở tùy chọn">
               <IconButton onClick={handleOpenMenu}>
-                <Avatar>
-                  {secureStorage.getItem("username")[0]}
-                </Avatar>
+                <Avatar src={avatar}/>
               </IconButton>
             </Tooltip>
 
@@ -118,14 +139,6 @@ function Header() {
 export default Header;
 
 const styles = {
-  boxLeft: {
-    flexGrow: 1,
-    display: "flex"
-  },
-  boxRight: {
-    flexGrow: 0,
-    display: "flex"
-  },
   button: {
     mx: 1,
     my: 2,
