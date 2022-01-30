@@ -11,8 +11,10 @@ import {
   KeyboardArrowUp as KeyboardArrowUpIcon, Launch as LaunchIcon
 } from "@mui/icons-material";
 import flashCardIcon from "../../assets/icons/flash-card.png";
+import multipleChoiceIcon from "../../assets/icons/multiple-choice.png";
 
 import Flashcards from "./Flashcards";
+import MultipleChoices from "./MultipleChoices";
 
 function SystemSetTable() {
   const {level, category} = useParams();
@@ -22,6 +24,7 @@ function SystemSetTable() {
   const [termsName, setTermsName] = useState("");
   const [open, setOpen] = useState(-1);
   const [flashcard, setFlashcard] = useState(false);
+  const [multipleChoice, setMultipleChoice] = useState(false);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -160,7 +163,7 @@ function SystemSetTable() {
 
               <ListItem button disabled={terms.length === 0} onClick={() => setFlashcard(true)}>
                 <ListItemAvatar>
-                  <img src={flashCardIcon} alt="vocabulary" height={30} width={35}/>
+                  <img src={flashCardIcon} alt="flashCard" height={30} width={35}/>
                 </ListItemAvatar>
                 <ListItemText primary="Thẻ ghi nhớ" primaryTypographyProps={styles.primary}/>
               </ListItem>
@@ -168,6 +171,18 @@ function SystemSetTable() {
               <Dialog open={flashcard} onClose={() => setFlashcard(false)} fullScreen>
                 <Flashcards terms={terms} exit={() => setFlashcard(false)} system={true}
                             setName={[5, 4, 3, 2, 1].includes(parseInt(level)) ? `${termsName} N${level}` : termsName}/>
+              </Dialog>
+
+              <ListItem button disabled={terms.length < 4} onClick={() => setMultipleChoice(true)}>
+                <ListItemAvatar>
+                  <img src={multipleChoiceIcon} alt="multipleChoice" height={30} width={35}/>
+                </ListItemAvatar>
+                <ListItemText primary="Trắc nghiệm" primaryTypographyProps={styles.primary}/>
+              </ListItem>
+
+              <Dialog open={multipleChoice} onClose={() => setMultipleChoice(false)} fullScreen>
+                <MultipleChoices terms={terms} exit={() => setMultipleChoice(false)} system={true}
+                                 setName={[5, 4, 3, 2, 1].includes(parseInt(level)) ? `${termsName} N${level}` : termsName}/>
               </Dialog>
             </Card>
           </Grid>
