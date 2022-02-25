@@ -1,23 +1,16 @@
 import React, {useContext, useEffect, useState} from "react";
-import axios from "../stores/axios";
-import snackbarContext from "../stores/snackbar-context";
+import {Link} from "react-router-dom";
+import axios from "../../stores/axios";
+import snackbarContext from "../../stores/snackbar-context";
 import {
   Avatar, Badge, Box, Button, Card, CircularProgress, Dialog, DialogContent, DialogTitle, Grid, IconButton, Typography
 } from "@mui/material";
-import {CameraAlt as CameraAltIcon} from "@mui/icons-material";
-import moment from "moment";
+import {CameraAlt as CameraAltIcon, Group as GroupIcon, Launch as LaunchIcon} from "@mui/icons-material";
 
-function PersonalInformation() {
+function ClassTab(props) {
   const sbCtx = useContext(snackbarContext);
 
-  const [id, setId] = useState(0);
-  const [username, setUsername] = useState("");
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [birthday, setBirthday] = useState("");
-  const [phone, setPhone] = useState("");
-  const [role, setRole] = useState("");
-  const [avatar, setAvatar] = useState("");
+  const [course, setCourse] = useState({});
   const [dialog, setDialog] = useState(false);
   const [disabled, setDisabled] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -25,21 +18,16 @@ function PersonalInformation() {
 
   useEffect(() => {
     getData();
-  }, []);
+  }, [props.id]);
 
   const getData = () => {
     setLoading(true);
     axios
-      .get("/users/personal")
+      .post("/classes/show", {
+        id: props.id
+      })
       .then((res) => {
-        setId(res.data.user.id);
-        setUsername(res.data.user.username);
-        setName(res.data.user.name);
-        setEmail(res.data.user.email);
-        setBirthday(res.data.user.birthday);
-        setPhone(res.data.user.phone);
-        setRole(res.data.user.role);
-        setAvatar(res.data.user.avatar);
+        setCourse(res.data.course);
         setLoading(false);
       })
       .catch((err) => {
@@ -50,9 +38,10 @@ function PersonalInformation() {
   const uploadAvatar = () => {
     setDisabled(true);
     const formData = new FormData();
+    formData.append("id", props.id.toString());
     formData.append("avatar", avatarEdit[0]);
     axios
-      .post("/users/avatar", formData)
+      .post("/classes/avatar", formData)
       .then((res) => {
         getData();
         sbCtx.onSnackbar("Đổi ảnh đại diện thành công!", "success");
@@ -67,10 +56,6 @@ function PersonalInformation() {
 
   return (
     <Card elevation={6}>
-      <Typography textAlign="center" fontWeight="bold" fontSize={30} my={2}>
-        Thông tin cá nhân
-      </Typography>
-
       {loading ? (
         <Box display="flex" justifyContent="center">
           <CircularProgress color="success"/>
@@ -78,14 +63,16 @@ function PersonalInformation() {
       ) : (
         <>
           <Box display="block">
-            <Box sx={styles.badge}>
+            <Box height={200} width={200} mx="auto" my={2}>
               <Badge overlap="circular" anchorOrigin={{vertical: "bottom", horizontal: "right"}}
                      badgeContent={
                        <IconButton sx={styles.iconBox} onClick={() => setDialog(true)}>
                          <CameraAltIcon sx={styles.icon}/>
                        </IconButton>
                      }>
-                <Avatar src={avatar} sx={styles.avatar}/>
+                <Avatar variant="rounded" src={course.avatar} sx={styles.avatar}>
+                  <GroupIcon sx={styles.avatar}/>
+                </Avatar>
               </Badge>
             </Box>
           </Box>
@@ -105,7 +92,7 @@ function PersonalInformation() {
 
               {avatarEdit !== null && (
                 <Box display="flex" justifyContent="center" mt={3}>
-                  <Avatar src={URL.createObjectURL(avatarEdit[0])} sx={styles.avatar}/>
+                  <Avatar variant="rounded" src={URL.createObjectURL(avatarEdit[0])} sx={styles.avatar}/>
                 </Box>
               )}
 
@@ -121,57 +108,27 @@ function PersonalInformation() {
             </DialogContent>
           </Dialog>
 
-          <Grid container spacing={2} mx={1} mt={1}>
-            <Grid item xs={4}>
-              <Typography>Tên đăng nhập:</Typography>
-            </Grid>
-            <Grid item xs={8}>
-              <Typography>{username}</Typography>
-            </Grid>
-          </Grid>
+          <Typography textAlign="center" fontSize={25} fontWeight="bold" my={2}>
+            {course.name}
+          </Typography>
 
-          <Grid container spacing={2} mx={1} mt={1}>
-            <Grid item xs={4}>
-              <Typography>Họ và tên:</Typography>
-            </Grid>
-            <Grid item xs={8}>
-              <Typography>{name}</Typography>
-            </Grid>
-          </Grid>
+          <Typography textAlign="justify" fontSize={18} my={4} mx={2}>
+            {course.description}
+          </Typography>
 
-          <Grid container spacing={2} mx={1} mt={1}>
-            <Grid item xs={4}>
-              <Typography>Email:</Typography>
+          <Grid container spacing={1} px={2} mb={1}>
+            <Grid item xs={6} display="flex" color="#3f6600">
+              <GroupIcon/>
+              <Typography fontSize={18} ml={0.5}>
+                {course.members} thành viên
+              </Typography>
             </Grid>
-            <Grid item xs={8}>
-              <Typography>{email}</Typography>
-            </Grid>
-          </Grid>
 
-          <Grid container spacing={2} mx={1} mt={1}>
-            <Grid item xs={4}>
-              <Typography>Ngày sinh:</Typography>
-            </Grid>
-            <Grid item xs={8}>
-              <Typography>{moment(birthday).add(1, "d").format("DD/MM/YYYY")}</Typography>
-            </Grid>
-          </Grid>
-
-          <Grid container spacing={2} mx={1} mt={1}>
-            <Grid item xs={4}>
-              <Typography>Điện thoại:</Typography>
-            </Grid>
-            <Grid item xs={8}>
-              <Typography>{phone}</Typography>
-            </Grid>
-          </Grid>
-
-          <Grid container spacing={2} mx={1} my={1}>
-            <Grid item xs={4}>
-              <Typography>Chức năng:</Typography>
-            </Grid>
-            <Grid item xs={8}>
-              <Typography>{role}</Typography>
+            <Grid item xs={6} display="flex" justifyContent="right">
+              <Button color="success" variant="outlined" endIcon={<LaunchIcon/>}
+                      component={Link} to={`/teacher/class/${course.id}`}>
+                Chi tiết
+              </Button>
             </Grid>
           </Grid>
         </>
@@ -180,24 +137,18 @@ function PersonalInformation() {
   );
 }
 
-export default PersonalInformation;
+export default ClassTab;
 
 const styles = {
-  badge: {
-    mx: "auto",
-    my: 2,
-    height: 200,
-    width: 200
-  },
-  avatar: {
-    height: 200,
-    width: 200
-  },
   iconBox: {
     backgroundColor: "#aaaaaa"
   },
   icon: {
     height: 35,
     width: 35
+  },
+  avatar: {
+    height: 200,
+    width: 200
   }
 }

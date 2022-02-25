@@ -8,8 +8,8 @@ import {
   Divider, Fade
 } from "@mui/material";
 import {
-  LocalLibrary as LocalLibraryIcon, Login as LoginIcon, Logout as LogoutIcon, ManageAccounts as ManageAccountsIcon,
-  Search as SearchIcon
+  Class as ClassIcon, LocalLibrary as LocalLibraryIcon, Login as LoginIcon, Logout as LogoutIcon,
+  ManageAccounts as ManageAccountsIcon, Search as SearchIcon
 } from "@mui/icons-material";
 import logoWhite from "../assets/logo/logo-white.png";
 
@@ -18,6 +18,7 @@ function Header() {
   const signCtx = useContext(signContext);
 
   const [avatar, setAvatar] = useState("");
+  const [search, setSearch] = useState("");
   const [anchorMenu, setAnchorMenu] = useState(null);
 
   const handleOpenMenu = (e) => setAnchorMenu(e.currentTarget);
@@ -35,6 +36,13 @@ function Header() {
       });
   }
 
+  const onSearch = (e) => {
+    e.preventDefault();
+    if (search.trim().length > 0) {
+      history.push(`/search?value=${search.trim()}`);
+    }
+  }
+
   const toPersonal = () => {
     history.push("/personal");
     handleCloseMenu();
@@ -42,6 +50,11 @@ function Header() {
 
   const toSetEdit = () => {
     history.push("/admin/sets/welcome");
+    handleCloseMenu();
+  }
+
+  const toTeacherClasses = () => {
+    history.push("/teacher/classes");
     handleCloseMenu();
   }
 
@@ -66,12 +79,15 @@ function Header() {
           </Box>
 
           <Box ml={5}>
-            <Search>
-              <SearchIconWrapper>
-                <SearchIcon/>
-              </SearchIconWrapper>
-              <StyledInputBase placeholder="Tìm kiếm..." inputProps={{"aria-label": "search"}}/>
-            </Search>
+            <form onSubmit={onSearch}>
+              <Search>
+                <SearchIconWrapper>
+                  <SearchIcon/>
+                </SearchIconWrapper>
+                <StyledInputBase placeholder="Tìm kiếm..." inputProps={{"aria-label": "search"}}
+                                 onChange={(e) => setSearch(e.currentTarget.value)}/>
+              </Search>
+            </form>
           </Box>
         </Box>
 
@@ -100,6 +116,24 @@ function Header() {
                     Chỉnh sửa học phần
                   </Typography>
                 </MenuItem>
+              )}
+
+              {secureStorage.getItem("role") === "teacher" && (
+                <>
+                  <MenuItem onClick={toPersonal}>
+                    <ManageAccountsIcon/>
+                    <Typography fontSize={18} ml={1}>
+                      Thông tin cá nhân
+                    </Typography>
+                  </MenuItem>
+
+                  <MenuItem onClick={toTeacherClasses}>
+                    <ClassIcon/>
+                    <Typography fontSize={18} ml={1} mt={1}>
+                      Lớp học của bạn
+                    </Typography>
+                  </MenuItem>
+                </>
               )}
 
               {secureStorage.getItem("role") === "student" && (
