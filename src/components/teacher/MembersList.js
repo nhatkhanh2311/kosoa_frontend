@@ -108,7 +108,7 @@ function MembersList() {
                             }/>
               </Grid>
 
-              <Grid item xs={4} display="flex" justifyContent="right">
+              <Grid item xs={4} display="flex" justifyContent="right" pr={2}>
                 <Tooltip title="Xóa thành viên">
                   <IconButton onClick={() => setDialog(true)}>
                     <ClearIcon color="error"/>
@@ -150,7 +150,7 @@ function MembersList() {
                             }/>
               </Grid>
 
-              <Grid item xs={4} display="flex" justifyContent="right">
+              <Grid item xs={4} display="flex" justifyContent="right" pr={2}>
                 <Tooltip title="Đồng ý">
                   <IconButton onClick={() => accept(member.id)}>
                     <DoneIcon color="success"/>

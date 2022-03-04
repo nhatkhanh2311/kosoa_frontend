@@ -1,14 +1,13 @@
 import React, {useContext, useEffect, useState} from "react";
-import {useParams} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import axios from "../../stores/axios";
 import snackbarContext from "../../stores/snackbar-context";
 import {
-  Avatar, Badge, Box, Button, Card, CircularProgress, Dialog, DialogContent, DialogTitle, IconButton, ToggleButton,
-  ToggleButtonGroup, Typography
+  Avatar, Badge, Box, Button, Card, CircularProgress, Dialog, DialogContent, DialogTitle, IconButton, Typography
 } from "@mui/material";
-import {CameraAlt as CameraAltIcon, Group as GroupIcon} from "@mui/icons-material";
+import {CameraAlt as CameraAltIcon, Group as GroupIcon, Launch as LaunchIcon} from "@mui/icons-material";
 
-function ClassInformation(props) {
+function ClassInformation() {
   const {classId} = useParams();
   const sbCtx = useContext(snackbarContext);
 
@@ -17,7 +16,6 @@ function ClassInformation(props) {
   const [disabled, setDisabled] = useState(false);
   const [loading, setLoading] = useState(false);
   const [avatarEdit, setAvatarEdit] = useState(null);
-  const [tab, setTab] = useState(1);
 
   useEffect(() => {
     getData();
@@ -56,11 +54,6 @@ function ClassInformation(props) {
         sbCtx.onSnackbar("Đã có lỗi xảy ra!", "error");
         setDisabled(false);
       });
-  }
-
-  const changeTab = (e, value) => {
-    setTab(value);
-    props.render(value);
   }
 
   return (
@@ -133,16 +126,10 @@ function ClassInformation(props) {
           </Box>
 
           <Box display="flex" justifyContent="center" my={2}>
-            <ToggleButtonGroup color="success" orientation="vertical" value={tab} exclusive sx={styles.group}
-                      onChange={changeTab}>
-              <ToggleButton value={1}>
-                Thông báo
-              </ToggleButton>
-
-              <ToggleButton value={2}>
-                Học phần
-              </ToggleButton>
-            </ToggleButtonGroup>
+            <Button color="success" variant="outlined" endIcon={<LaunchIcon/>}
+                    component={Link} to={`/teacher/class-sets/${classId}`}>
+              Học phần
+            </Button>
           </Box>
         </>
       )}
@@ -163,8 +150,5 @@ const styles = {
   avatar: {
     height: 200,
     width: 200
-  },
-  group: {
-    width: "50%"
   }
 }

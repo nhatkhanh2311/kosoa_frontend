@@ -63,6 +63,10 @@ function Header() {
     handleCloseMenu();
   }
 
+  const toStudentClasses = () => {
+    history.push("/student/classes")
+  }
+
   const signOut = () => {
     secureStorage.clear();
     window.location.reload();
@@ -105,14 +109,15 @@ function Header() {
           <Box display="flex" flexGrow={0}>
             <Tooltip title="Mở tùy chọn">
               <IconButton onClick={handleOpenMenu}>
-                <Avatar src={avatar}/>
+                <Avatar src={secureStorage.getItem("role") === "admin" ? "/logo.png" : avatar}/>
               </IconButton>
             </Tooltip>
 
             <Menu open={!!anchorMenu} onClose={handleCloseMenu} anchorEl={anchorMenu} TransitionComponent={Fade}>
               {secureStorage.getItem("role") === "admin" && (
                 <MenuItem onClick={toSetEdit}>
-                  <Typography fontSize={18}>
+                  <LocalLibraryIcon/>
+                  <Typography fontSize={18} ml={1}>
                     Chỉnh sửa học phần
                   </Typography>
                 </MenuItem>
@@ -129,7 +134,7 @@ function Header() {
 
                   <MenuItem onClick={toTeacherClasses}>
                     <ClassIcon/>
-                    <Typography fontSize={18} ml={1} mt={1}>
+                    <Typography fontSize={18} ml={1}>
                       Lớp học của bạn
                     </Typography>
                   </MenuItem>
@@ -147,8 +152,15 @@ function Header() {
 
                   <MenuItem onClick={toSystemSets}>
                     <LocalLibraryIcon/>
-                    <Typography fontSize={18} ml={1} mt={1}>
+                    <Typography fontSize={18} ml={1}>
                       Chương trình học
+                    </Typography>
+                  </MenuItem>
+
+                  <MenuItem onClick={toStudentClasses}>
+                    <ClassIcon/>
+                    <Typography fontSize={18} ml={1}>
+                      Lớp học đã tham gia
                     </Typography>
                   </MenuItem>
                 </>

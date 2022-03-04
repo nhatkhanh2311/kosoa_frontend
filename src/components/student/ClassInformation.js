@@ -1,14 +1,15 @@
 import React, {useContext, useEffect, useState} from "react";
-import {useParams} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import axios from "../../stores/axios";
 import snackbarContext from "../../stores/snackbar-context";
 import {
-  Avatar, Box, Button, Card, CircularProgress, Dialog, DialogContent, DialogTitle, ToggleButton, ToggleButtonGroup,
-  Typography
+  Avatar, Box, Button, Card, CircularProgress, Dialog, DialogContent, DialogTitle, Typography
 } from "@mui/material";
-import {AddBox as AddBoxIcon, Cancel as CancelIcon, Group as GroupIcon} from "@mui/icons-material";
+import {
+  AddBox as AddBoxIcon, Cancel as CancelIcon, Group as GroupIcon, Launch as LaunchIcon
+} from "@mui/icons-material";
 
-function ClassInformation(props) {
+function ClassInformation() {
   const {classId} = useParams();
   const sbCtx = useContext(snackbarContext);
 
@@ -92,11 +93,6 @@ function ClassInformation(props) {
       });
   }
 
-  const changeTab = (e, value) => {
-    setTab(value);
-    props.render(value);
-  }
-
   return (
     <Card elevation={6}>
       {loading ? (
@@ -129,18 +125,12 @@ function ClassInformation(props) {
           </Box>
 
           {joined === 1 && (
-          <Box display="flex" justifyContent="center" my={2}>
-            <ToggleButtonGroup color="success" orientation="vertical" value={tab} exclusive sx={styles.group}
-                               onChange={changeTab}>
-              <ToggleButton value={1}>
-                Thông báo
-              </ToggleButton>
-
-              <ToggleButton value={2}>
+            <Box display="flex" justifyContent="center" my={2}>
+              <Button color="success" variant="outlined" endIcon={<LaunchIcon/>}
+                      component={Link} to={`/student/class-sets/${classId}`}>
                 Học phần
-              </ToggleButton>
-            </ToggleButtonGroup>
-          </Box>
+              </Button>
+            </Box>
           )}
 
           <Box display="flex" justifyContent="center" mb={2}>
@@ -182,8 +172,5 @@ const styles = {
   avatar: {
     height: 200,
     width: 200
-  },
-  group: {
-    width: "50%"
   }
 }

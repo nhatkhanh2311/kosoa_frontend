@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useRef, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
 import axios from "../../stores/axios";
 import snackbarContext from "../../stores/snackbar-context";
@@ -14,7 +14,6 @@ import {
 
 function SetEditTable() {
   const {level, category} = useParams();
-  const add = useRef(null);
   const sbCtx = useContext(snackbarContext);
 
   const [terms, setTerms] = useState([]);
@@ -55,10 +54,6 @@ function SetEditTable() {
     setValidationTerm(false);
     setDisabled(false);
   }, [level, category]);
-
-  useEffect(() => {
-    add.current.focus();
-  }, [disabled]);
 
   const getTerms = () => {
     setLoading(true);
@@ -144,7 +139,12 @@ function SetEditTable() {
           sbCtx.onSnackbar(`Chỉnh sửa ${termsName} thành công!`, "success");
         })
         .catch((err) => {
-          sbCtx.onSnackbar("Đã có lỗi xảy ra!", "error");
+          if (err.response.data.message === "term taken") {
+            sbCtx.onSnackbar("Thuật ngữ đã tồn tại!", "warning");
+          }
+          else {
+            sbCtx.onSnackbar("Đã có lỗi xảy ra!", "error");
+          }
           setDisabled(false);
         });
     }
@@ -153,7 +153,7 @@ function SetEditTable() {
     }
   }
 
-  const deleteTerm = (id, index, term) => {
+  const deleteTerm = (id, index) => {
     axios
       .post("/terms/destroy", {
         id: id
@@ -162,7 +162,7 @@ function SetEditTable() {
         let tempTerms = terms;
         tempTerms.splice(index, 1);
         setTerms(tempTerms);
-        sbCtx.onSnackbar(`Xóa "${term}" thành công!`, "success");
+        sbCtx.onSnackbar(`Xóa ${termsName} thành công!`, "success");
       })
       .catch((err) => {
         sbCtx.onSnackbar("Đã có lỗi xảy ra!", "error");
@@ -323,7 +323,7 @@ function SetEditTable() {
 
                       <TableCell align="center">
                         <Tooltip title="Xóa">
-                          <IconButton onClick={() => deleteTerm(term.id, index, term.term)}>
+                          <IconButton onClick={() => deleteTerm(term.id, index)}>
                             <DeleteIcon color="error"/>
                           </IconButton>
                         </Tooltip>
@@ -360,7 +360,7 @@ function SetEditTable() {
               <Grid container spacing={2} px={1}>
                 <Grid item xs={3.5}>
                   <TextField id="term" label={termsName} type="text" variant="standard" value={term}
-                             fullWidth disabled={disabled} ref={add} error={validationTerm}
+                             fullWidth disabled={disabled} error={validationTerm}
                              helperText={validationTerm && "Bạn phải điền thuật ngữ!"}
                              onChange={(e) => setTerm(e.currentTarget.value)}/>
                 </Grid>
@@ -415,6 +415,6 @@ const styles = {
   button: {
     width: 150,
     my: 1,
-    ml: 1
+    ml: 2
   }
 }

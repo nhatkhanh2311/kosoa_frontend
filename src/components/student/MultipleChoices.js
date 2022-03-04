@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
+import {Link} from "react-router-dom";
 import {
-  Avatar, Box, Button, Card, CircularProgress, DialogContent, Grid, LinearProgress, ToggleButton, Typography
+  Avatar, Box, Button, Card, CardHeader, CircularProgress, DialogContent, Grid, LinearProgress, ToggleButton, Typography
 } from "@mui/material";
 import {
   Close as CloseIcon, Done as DoneIcon, Keyboard as KeyboardIcon, KeyboardArrowLeft as KeyboardArrowLeftIcon,
@@ -138,9 +139,20 @@ function MultipleChoices(props) {
               Tạo bởi:
             </Typography>
 
-            {props.system && (
+            {props.system ? (
               <Box display="flex" justifyContent="center" height={40} mt={1}>
                 <img src={logoLime} alt="logo"/>
+              </Box>
+            ) : (
+              <Box display="flex" justifyContent="center" height={40} mt={1}>
+                <CardHeader avatar={<Avatar src={props.author.avatar} component={Link}
+                                            to={`/user/${props.author.id}`} target="_blank"/>}
+                            title={
+                              <Typography sx={styles.title} component={Link}
+                                          to={`/user/${props.author.id}`} target="_blank">
+                                {props.author.name}
+                              </Typography>
+                            }/>
               </Box>
             )}
 
@@ -272,6 +284,7 @@ function MultipleChoices(props) {
                   </Box>
                 </>
               )}
+
               {isEnded && (
                 <Box display="flex" justifyContent="center">
                   <Card elevation={6} sx={styles.card2}>
@@ -283,6 +296,7 @@ function MultipleChoices(props) {
                   </Card>
                 </Box>
               )}
+
               {!isStarted && (
                 <Box display="flex" justifyContent="center">
                   <Card elevation={6} sx={styles.card2}>
@@ -388,5 +402,9 @@ const styles = {
   },
   progress: {
     width: 250
+  },
+  title: {
+    fontWeight: "bold",
+    textDecoration: "none"
   }
 }

@@ -11,17 +11,21 @@ import Header from "./components/Header";
 
 import Home from "./pages/Home";
 import Personal from "./pages/Personal";
+import User from "./pages/User";
 import SystemTerm from "./pages/SystemTerm";
 import Search from "./pages/Search";
 
 import SetEdit from "./pages/admin/SetEdit";
 
-import Classes from "./pages/teacher/Classes";
+import ClassesTeacher from "./pages/teacher/Classes";
 import ClassTeacher from "./pages/teacher/Class";
+import ClassSetEdit from "./pages/teacher/ClassSetEdit";
 
 import ChooseLevel from "./pages/student/ChooseLevel";
 import SystemSet from "./pages/student/SystemSet";
+import ClassesStudent from "./pages/student/Classes";
 import ClassStudent from "./pages/student/Class";
+import ClassSet from "./pages/student/ClassSet";
 
 function App() {
   return (
@@ -45,6 +49,10 @@ function App() {
               ) : (
                 <Redirect to="/"/>
               )}
+            </Route>
+
+            <Route path="/user/:userId">
+              <User/>
             </Route>
 
             <Route path="/term/:termId">
@@ -73,7 +81,7 @@ function App() {
 
             <Route path="/teacher/classes">
               {secureStorage.getItem("role") === "teacher" ? (
-                <Classes/>
+                <ClassesTeacher/>
               ) : (
                 <Redirect to="/"/>
               )}
@@ -82,6 +90,14 @@ function App() {
             <Route path="/teacher/class/:classId">
               {secureStorage.getItem("role") === "teacher" ? (
                 <ClassTeacher/>
+              ) : (
+                <Redirect to="/"/>
+              )}
+            </Route>
+
+            <Route path="/teacher/class-sets/:classId">
+              {secureStorage.getItem("role") === "teacher" ? (
+                <ClassSetEdit/>
               ) : (
                 <Redirect to="/"/>
               )}
@@ -109,9 +125,25 @@ function App() {
               )}
             </Route>
 
+            <Route path="/student/classes">
+              {secureStorage.getItem("role") === "student" ? (
+                <ClassesStudent/>
+              ) : (
+                <Redirect to="/"/>
+              )}
+            </Route>
+
             <Route path="/student/class/:classId">
               {secureStorage.getItem("role") === "student" ? (
                 <ClassStudent/>
+              ) : (
+                <Redirect to="/"/>
+              )}
+            </Route>
+
+            <Route path="/student/class-sets/:classId">
+              {secureStorage.getItem("role") === "student" ? (
+                <ClassSet/>
               ) : (
                 <Redirect to="/"/>
               )}

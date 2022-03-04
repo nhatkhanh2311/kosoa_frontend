@@ -63,10 +63,9 @@ function Search() {
           <Box mt={2}>
             {(tab === "teacher" || tab === "student") && results.map((user) => (
               <Card sx={styles.cardChild}>
-                <CardHeader avatar={<Avatar src={user.avatar} component={Link}
-                                            to={`/user/${user.username}`} target="_blank"/>}
+                <CardHeader avatar={<Avatar src={user.avatar} component={Link} to={`/user/${user.id}`}/>}
                             title={
-                              <Typography sx={styles.title} component={Link} to={`/user/${user.username}`}>
+                              <Typography sx={styles.title} component={Link} to={`/user/${user.id}`}>
                                 {user.name}
                               </Typography>
                             }
@@ -106,7 +105,7 @@ function Search() {
             {tab === "class" && results.map((course) => (
               <Card sx={styles.cardChild}>
                 <CardHeader avatar={<Avatar variant="rounded" src={course.avatar} component={Link}
-                                            to={`/student/class/${course.id}`} target="_blank"/>}
+                                            to={`/student/class/${course.id}`}/>}
                             title={
                               <Typography sx={styles.title} component={Link} to={`/student/class/${course.id}`}>
                                 {course.name}
@@ -115,10 +114,11 @@ function Search() {
                             subheader={course.members + " thành viên"}/>
 
                 <CardContent>
-                  {course.description.length > 30 ? course.description.substring(0, 80) + "..." : course.description}
+                  {course.description.length > 80 ? course.description.substring(0, 80) + "..." : course.description}
                 </CardContent>
               </Card>
             ))}
+
             {tab === "term" && results.map((term) => (
               <Card sx={styles.cardChild}>
                 <Grid container my={2} mx={2}>

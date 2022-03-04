@@ -10,13 +10,8 @@ function Personal() {
 
   return (
     <Box display="flex" justifyContent="center" mt={2}>
-      <Box width="40%" position="fixed">
+      <Box width="40%" minWidth={500}>
         <PersonalInformation/>
-      </Box>
-
-      <Box width="40%" mr={2}/>
-
-      <Box width="40%">
       </Box>
     </Box>
   );

@@ -1,14 +1,15 @@
 import React, {useEffect, useState} from "react";
+import {Link} from "react-router-dom";
 import ReactCardFlip from "react-card-flip";
 import {
-  Box, Button, Card, Checkbox, DialogContent, FormControlLabel, Grid, IconButton, Slider, ToggleButton,
-  ToggleButtonGroup, Tooltip, Typography
+  Avatar, Box, Button, Card, CardHeader, Checkbox, DialogContent, FormControlLabel, Grid, IconButton, Slider,
+  ToggleButton, ToggleButtonGroup, Tooltip, Typography
 } from "@mui/material";
 import {
   ArrowCircleDownOutlined as ArrowCircleDownOutlinedIcon, ArrowCircleLeftOutlined as ArrowCircleLeftOutlinedIcon,
   ArrowCircleRightOutlined as ArrowCircleRightOutlinedIcon, ArrowCircleUpOutlined as ArrowCircleUpOutlinedIcon,
   Keyboard as KeyboardIcon, KeyboardArrowLeft as KeyboardArrowLeftIcon, KeyboardArrowRight as KeyboardArrowRightIcon,
-  RestartAlt as RestartAltIcon, Shuffle as ShuffleIcon, Tune as TuneIcon
+  Launch as LaunchIcon, RestartAlt as RestartAltIcon, Shuffle as ShuffleIcon, Tune as TuneIcon
 } from "@mui/icons-material";
 import flashCardIcon from "../../assets/icons/flash-card.png";
 import logoLime from "../../assets/logo/logo-lime.png";
@@ -103,9 +104,20 @@ function Flashcards(props) {
               Tạo bởi:
             </Typography>
 
-            {props.system && (
+            {props.system ? (
               <Box display="flex" justifyContent="center" height={40} mt={1}>
                 <img src={logoLime} alt="logo"/>
+              </Box>
+            ) : (
+              <Box display="flex" justifyContent="center" height={40} mt={1}>
+                <CardHeader avatar={<Avatar src={props.author.avatar} component={Link}
+                                            to={`/user/${props.author.id}`} target="_blank"/>}
+                            title={
+                              <Typography sx={styles.title} component={Link}
+                                          to={`/user/${props.author.id}`} target="_blank">
+                                {props.author.name}
+                              </Typography>
+                            }/>
               </Box>
             )}
 
@@ -150,6 +162,16 @@ function Flashcards(props) {
                       {frontPronunciation && <br/>}
                       {frontDefinition && term.definition}
                     </Typography>
+
+                    {props.system && (
+                      <Box position="absolute" right={10} top={10}>
+                        <Tooltip title="Chi tiết">
+                          <IconButton component={Link} to={`/term/${term.id}`} target="_blank">
+                            <LaunchIcon color="success"/>
+                          </IconButton>
+                        </Tooltip>
+                      </Box>
+                    )}
                   </Card>
 
                   <Card elevation={6} onClick={() => setIsFlipped(!isFlipped)} sx={styles.card}>
@@ -160,6 +182,16 @@ function Flashcards(props) {
                       {backPronunciation && <br/>}
                       {backDefinition && term.definition}
                     </Typography>
+
+                    {props.system && (
+                      <Box position="absolute" right={10} top={10}>
+                        <Tooltip title="Chi tiết">
+                          <IconButton component={Link} to={`/term/${term.id}`} target="_blank">
+                            <LaunchIcon color="success"/>
+                          </IconButton>
+                        </Tooltip>
+                      </Box>
+                    )}
                   </Card>
                 </ReactCardFlip>
               ))}
@@ -307,5 +339,9 @@ const styles = {
   },
   check: {
     ml: 1
+  },
+  title: {
+    fontWeight: "bold",
+    textDecoration: "none"
   }
 }

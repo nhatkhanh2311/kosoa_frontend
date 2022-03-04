@@ -171,7 +171,10 @@ function PersonalInformation() {
               <Typography>Chức năng:</Typography>
             </Grid>
             <Grid item xs={8}>
-              <Typography>{role}</Typography>
+              <Typography>
+                {role === "student" && "Người học"}
+                {role === "teacher" && "Người dạy"}
+              </Typography>
             </Grid>
           </Grid>
         </>
