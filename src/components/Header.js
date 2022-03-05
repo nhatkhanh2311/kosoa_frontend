@@ -64,7 +64,8 @@ function Header() {
   }
 
   const toStudentClasses = () => {
-    history.push("/student/classes")
+    history.push("/student/classes");
+    handleCloseMenu();
   }
 
   const signOut = () => {

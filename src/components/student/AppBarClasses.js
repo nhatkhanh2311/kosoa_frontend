@@ -60,7 +60,6 @@ function AppBarClasses(props) {
 export default AppBarClasses;
 
 const styles = {
-
   primary: {
     fontWeight: "medium",
     fontSize: 20

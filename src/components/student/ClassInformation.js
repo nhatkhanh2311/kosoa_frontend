@@ -113,7 +113,7 @@ function ClassInformation() {
             {course.name}
           </Typography>
 
-          <Typography textAlign="justify" fontSize={18} my={4} mx={2}>
+          <Typography textAlign="justify" whiteSpace="pre-line" fontSize={18} my={4} mx={2}>
             {course.description}
           </Typography>
 
