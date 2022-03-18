@@ -3,19 +3,31 @@ import {Link, useParams} from "react-router-dom";
 import axios from "../../stores/axios";
 import snackbarContext from "../../stores/snackbar-context";
 import {
-  Avatar, Badge, Box, Button, Card, CircularProgress, Dialog, DialogContent, DialogTitle, IconButton, Typography
+  Avatar, Badge, Box, Button, Card, CircularProgress, Dialog, DialogContent, DialogTitle, Grid, IconButton, TextField,
+  Tooltip, Typography
 } from "@mui/material";
-import {CameraAlt as CameraAltIcon, Group as GroupIcon, Launch as LaunchIcon} from "@mui/icons-material";
+import {
+  CameraAlt as CameraAltIcon, Cancel as CancelIcon, Edit as EditIcon, Group as GroupIcon, Launch as LaunchIcon,
+  Save as SaveIcon
+} from "@mui/icons-material";
 
 function ClassInformation() {
   const {classId} = useParams();
   const sbCtx = useContext(snackbarContext);
 
-  const [course, setCourse] = useState({});
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [avatar, setAvatar] = useState("");
+  const [members, setMembers] = useState(0);
   const [dialog, setDialog] = useState(false);
   const [disabled, setDisabled] = useState(false);
   const [loading, setLoading] = useState(false);
   const [avatarEdit, setAvatarEdit] = useState(null);
+  const [nameEdit, setNameEdit] = useState("");
+  const [descriptionEdit, setDescriptionEdit] = useState("");
+  const [edit, setEdit] = useState("");
+  const [disabledEdit, setDisabledEdit] = useState(false);
+  const [validation, setValidation] = useState(false);
 
   useEffect(() => {
     getData();
@@ -28,7 +40,10 @@ function ClassInformation() {
         id: classId
       })
       .then((res) => {
-        setCourse(res.data.course);
+        setName(res.data.course.name);
+        setDescription(res.data.course.description);
+        setAvatar(res.data.course.avatar);
+        setMembers(res.data.course.members);
         setLoading(false);
         document.title = `${res.data.course.name} - KoSoA`;
       })
@@ -56,6 +71,50 @@ function ClassInformation() {
       });
   }
 
+  const editInfo = (type) => {
+    let ok = true;
+    if (type === "name" && nameEdit.trim().length === 0) {
+      setValidation(true);
+      ok = false;
+    }
+    if (ok) {
+      setDisabledEdit(true);
+      setValidation(false);
+      axios
+        .post("/classes/update", type === "name" ? {
+          id: classId,
+          course: {
+            name: nameEdit.trim()
+          }
+        } : {
+          id: classId,
+          course: {
+            description: descriptionEdit.trim()
+          }
+        })
+        .then((res) => {
+          sbCtx.onSnackbar("Cập nhật thông tin thành công!", "success");
+          switch (type) {
+            case "name": setName(nameEdit); break;
+            case "description": setDescription(descriptionEdit); break;
+          }
+          setEdit("");
+          setDisabledEdit(false);
+        })
+        .catch((err) => {
+          sbCtx.onSnackbar("Đã có lỗi xảy ra!", "error");
+          setDisabledEdit(false);
+        });
+    }
+  }
+
+  const setEditType = (type) => {
+    setEdit(type);
+    setNameEdit(name);
+    setDescriptionEdit(description);
+    setValidation(false);
+  }
+
   return (
     <Card elevation={6}>
       {loading ? (
@@ -72,7 +131,7 @@ function ClassInformation() {
                          <CameraAltIcon sx={styles.icon}/>
                        </IconButton>
                      }>
-                <Avatar variant="rounded" src={course.avatar} sx={styles.avatar}>
+                <Avatar variant="rounded" src={avatar} sx={styles.avatar}>
                   <GroupIcon sx={styles.avatar}/>
                 </Avatar>
               </Badge>
@@ -110,18 +169,95 @@ function ClassInformation() {
             </DialogContent>
           </Dialog>
 
-          <Typography textAlign="center" fontSize={25} fontWeight="bold" my={2}>
-            {course.name}
-          </Typography>
+          <Grid container my={2}>
+            {edit === "name" ? (
+              <>
+                <Grid item xs={11} display="flex" alignItems="center">
+                  <TextField type="text" variant="standard" value={nameEdit}
+                             fullWidth disabled={disabledEdit} error={validation}
+                             helperText={validation && "Tên học phần là bắt buộc!"}
+                             onChange={(e) => setNameEdit(e.currentTarget.value)}/>
+                </Grid>
 
-          <Typography textAlign="justify" whiteSpace="pre-line" fontSize={18} my={4} mx={2}>
-            {course.description}
-          </Typography>
+                <Grid item xs={1}>
+                  <Tooltip title="Lưu" placement="top">
+                    <IconButton onClick={() => editInfo("name")}>
+                      <SaveIcon color="success"/>
+                    </IconButton>
+                  </Tooltip>
+
+                  <Tooltip title="Hủy">
+                    <IconButton onClick={() => setEditType("")}>
+                      <CancelIcon color="error"/>
+                    </IconButton>
+                  </Tooltip>
+                </Grid>
+              </>
+            ) : (
+              <>
+                <Grid item xs={11} display="flex" justifyContent="center" alignItems="center" pl={1}>
+                  <Typography textAlign="center" fontSize={25} fontWeight="bold">
+                    {name}
+                  </Typography>
+                </Grid>
+
+                <Grid item xs={1} display="flex" alignItems="center">
+                  <Tooltip title="Sửa">
+                    <IconButton onClick={() => setEditType("name")}>
+                      <EditIcon color="success"/>
+                    </IconButton>
+                  </Tooltip>
+                </Grid>
+              </>
+            )}
+          </Grid>
+
+          <Grid container my={4}>
+            {edit === "description" ? (
+              <>
+                <Grid item xs={11} display="flex" alignItems="center">
+                  <TextField type="text" multiline rows={5} variant="standard" value={descriptionEdit}
+                             fullWidth disabled={disabledEdit}
+                             onChange={(e) => setDescriptionEdit(e.currentTarget.value)}/>
+                </Grid>
+
+                <Grid item xs={1}>
+                  <Tooltip title="Lưu" placement="top">
+                    <IconButton onClick={() => editInfo("description")}>
+                      <SaveIcon color="success"/>
+                    </IconButton>
+                  </Tooltip>
+
+                  <Tooltip title="Hủy">
+                    <IconButton onClick={() => setEditType("")}>
+                      <CancelIcon color="error"/>
+                    </IconButton>
+                  </Tooltip>
+                </Grid>
+              </>
+            ) : (
+              <>
+                <Grid item xs={11} display="flex" alignItems="center" pl={1}>
+                  <Typography textAlign="justify" whiteSpace="pre-line" fontSize={18}>
+                    {description}
+                  </Typography>
+                </Grid>
+
+                <Grid item xs={1} display="flex" alignItems="center">
+                  <Tooltip title="Sửa">
+                    <IconButton onClick={() => setEditType("description")}>
+                      <EditIcon color="success"/>
+                    </IconButton>
+                  </Tooltip>
+                </Grid>
+              </>
+            )}
+          </Grid>
 
           <Box display="flex" color="#3f6600" ml={2} mb={2}>
             <GroupIcon/>
             <Typography fontSize={18} ml={0.5}>
-              {course.members} thành viên
+              {members} thành viên
             </Typography>
           </Box>
 

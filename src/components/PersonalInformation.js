@@ -2,9 +2,12 @@ import React, {useContext, useEffect, useState} from "react";
 import axios from "../stores/axios";
 import snackbarContext from "../stores/snackbar-context";
 import {
-  Avatar, Badge, Box, Button, Card, CircularProgress, Dialog, DialogContent, DialogTitle, Grid, IconButton, Typography
+  Avatar, Badge, Box, Button, Card, CircularProgress, Dialog, DialogContent, DialogTitle, Grid, IconButton, TextField,
+  Tooltip, Typography
 } from "@mui/material";
-import {CameraAlt as CameraAltIcon} from "@mui/icons-material";
+import {
+  CameraAlt as CameraAltIcon, Cancel as CancelIcon, Edit as EditIcon, Save as SaveIcon
+} from "@mui/icons-material";
 import moment from "moment";
 
 function PersonalInformation() {
@@ -22,6 +25,11 @@ function PersonalInformation() {
   const [disabled, setDisabled] = useState(false);
   const [loading, setLoading] = useState(false);
   const [avatarEdit, setAvatarEdit] = useState(null);
+  const [nameEdit, setNameEdit] = useState("");
+  const [phoneEdit, setPhoneEdit] = useState("");
+  const [edit, setEdit] = useState("");
+  const [disabledEdit, setDisabledEdit] = useState(false);
+  const [validation, setValidation] = useState(false);
 
   useEffect(() => {
     getData();
@@ -63,6 +71,54 @@ function PersonalInformation() {
         sbCtx.onSnackbar("Đã có lỗi xảy ra!", "error");
         setDisabled(false);
       });
+  }
+
+  const editInfo = (type) => {
+    let ok = true;
+    switch (type) {
+      case "name": if (nameEdit.length === 0) {
+        setValidation(true);
+        ok = false;
+      } break;
+      case "phone": if (!(phoneEdit.length === 0 || /^\d+$/.test(phoneEdit))) {
+        setValidation(true);
+        ok = false;
+      } break;
+    }
+    if (ok) {
+      setDisabledEdit(true);
+      setValidation(false);
+      axios
+        .post("/users/update", type === "name" ? {
+          user: {
+            name: nameEdit
+          }
+        } : {
+          user: {
+            phone: phoneEdit
+          }
+        })
+        .then((res) => {
+          sbCtx.onSnackbar("Cập nhật thông tin thành công!", "success");
+          switch (type) {
+            case "name": setName(nameEdit); break;
+            case "phone": setPhone(phoneEdit); break;
+          }
+          setEdit("");
+          setDisabledEdit(false);
+        })
+        .catch((err) => {
+          sbCtx.onSnackbar("Đã có lỗi xảy ra!", "error");
+          setDisabledEdit(false);
+        });
+    }
+  }
+
+  const setEditType = (type) => {
+    setEdit(type);
+    setNameEdit(name);
+    setPhoneEdit(phone);
+    setValidation(false);
   }
 
   return (
@@ -121,55 +177,129 @@ function PersonalInformation() {
             </DialogContent>
           </Dialog>
 
-          <Grid container spacing={2} mx={1} mt={1}>
+          <Grid container spacing={2} px={2} mt={1}>
             <Grid item xs={4}>
               <Typography>Tên đăng nhập:</Typography>
             </Grid>
+
             <Grid item xs={8}>
               <Typography>{username}</Typography>
             </Grid>
           </Grid>
 
-          <Grid container spacing={2} mx={1} mt={1}>
-            <Grid item xs={4}>
+          <Grid container spacing={2} px={2} mt={0.5}>
+            <Grid item xs={4} display="flex" alignItems="center">
               <Typography>Họ và tên:</Typography>
             </Grid>
-            <Grid item xs={8}>
-              <Typography>{name}</Typography>
-            </Grid>
+            {edit === "name" ? (
+              <>
+                <Grid item xs={7} display="flex" alignItems="center">
+                  <TextField type="text" variant="standard" value={nameEdit}
+                             fullWidth disabled={disabledEdit} error={validation}
+                             helperText={validation && "Tên không được để trống!"}
+                             onChange={(e) => setNameEdit(e.currentTarget.value)}/>
+                </Grid>
+
+                <Grid item xs={1}>
+                  <Tooltip title="Lưu" placement="top">
+                    <IconButton onClick={() => editInfo("name")}>
+                      <SaveIcon color="success"/>
+                    </IconButton>
+                  </Tooltip>
+
+                  <Tooltip title="Hủy">
+                    <IconButton onClick={() => setEditType("")}>
+                      <CancelIcon color="error"/>
+                    </IconButton>
+                  </Tooltip>
+                </Grid>
+              </>
+            ) : (
+              <>
+                <Grid item xs={7} display="flex" alignItems="center">
+                  <Typography>{name}</Typography>
+                </Grid>
+
+                <Grid item xs={1}>
+                  <Tooltip title="Sửa">
+                    <IconButton onClick={() => setEditType("name")}>
+                      <EditIcon color="success"/>
+                    </IconButton>
+                  </Tooltip>
+                </Grid>
+              </>
+            )}
           </Grid>
 
-          <Grid container spacing={2} mx={1} mt={1}>
+          <Grid container spacing={2} px={2} mt={0.5}>
             <Grid item xs={4}>
               <Typography>Email:</Typography>
             </Grid>
+
             <Grid item xs={8}>
               <Typography>{email}</Typography>
             </Grid>
           </Grid>
 
-          <Grid container spacing={2} mx={1} mt={1}>
+          <Grid container spacing={2} px={2} mt={1}>
             <Grid item xs={4}>
               <Typography>Ngày sinh:</Typography>
             </Grid>
+
             <Grid item xs={8}>
               <Typography>{moment(birthday).add(1, "d").format("DD/MM/YYYY")}</Typography>
             </Grid>
           </Grid>
 
-          <Grid container spacing={2} mx={1} mt={1}>
-            <Grid item xs={4}>
+          <Grid container spacing={2} px={2} mt={1}>
+            <Grid item xs={4} display="flex" alignItems="center">
               <Typography>Điện thoại:</Typography>
             </Grid>
-            <Grid item xs={8}>
-              <Typography>{phone}</Typography>
-            </Grid>
+            {edit === "phone" ? (
+              <>
+                <Grid item xs={7} display="flex" alignItems="center">
+                  <TextField type="text" variant="standard" value={phoneEdit}
+                             fullWidth disabled={disabledEdit} error={validation}
+                             helperText={validation && "Số điện thoại chỉ bao gồm chữ số!"}
+                             onChange={(e) => setPhoneEdit(e.currentTarget.value)}/>
+                </Grid>
+
+                <Grid item xs={1}>
+                  <Tooltip title="Lưu" placement="top">
+                    <IconButton onClick={() => editInfo("phone")}>
+                      <SaveIcon color="success"/>
+                    </IconButton>
+                  </Tooltip>
+
+                  <Tooltip title="Hủy">
+                    <IconButton onClick={() => setEditType("")}>
+                      <CancelIcon color="error"/>
+                    </IconButton>
+                  </Tooltip>
+                </Grid>
+              </>
+            ) : (
+              <>
+                <Grid item xs={7} display="flex" alignItems="center">
+                  <Typography>{phone}</Typography>
+                </Grid>
+
+                <Grid item xs={1}>
+                  <Tooltip title="Sửa">
+                    <IconButton onClick={() => setEditType("phone")}>
+                      <EditIcon color="success"/>
+                    </IconButton>
+                  </Tooltip>
+                </Grid>
+              </>
+            )}
           </Grid>
 
-          <Grid container spacing={2} mx={1} my={1}>
+          <Grid container spacing={2} px={2} my={1}>
             <Grid item xs={4}>
               <Typography>Chức năng:</Typography>
             </Grid>
+
             <Grid item xs={8}>
               <Typography>
                 {role === "student" && "Người học"}

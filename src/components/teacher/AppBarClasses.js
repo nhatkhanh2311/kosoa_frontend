@@ -3,7 +3,7 @@ import axios from "../../stores/axios";
 import snackbarContext from "../../stores/snackbar-context";
 import {
   Avatar, Box, Button, Card, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, ListItem,
-  ListItemAvatar, ListItemText, TextField, Typography
+  ListItemAvatar, ListItemText, Pagination, TextField, Typography
 } from "@mui/material";
 import {Add as AddIcon, Group as GroupIcon} from "@mui/icons-material";
 
@@ -18,6 +18,7 @@ function AppBarClasses(props) {
   const [validateName, setValidateName] = useState(false);
   const [disabled, setDisabled]= useState(false);
   const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     getClasses();
@@ -68,6 +69,10 @@ function AppBarClasses(props) {
     props.render(id);
   }
 
+  const handlePage = (e, value) => {
+    setPage(value);
+  }
+
   return (
     <Card elevation={6}>
       <Typography textAlign="center" fontSize={25} fontWeight="bold" my={2}>
@@ -80,7 +85,7 @@ function AppBarClasses(props) {
         </Box>
       ) : (
         <>
-          {courses.map((course, index) => (
+          {courses.slice((page - 1) * 7, page * 7).map((course, index) => (
             <ListItem button selected={currentClass === index} onClick={() => selectClass(index, course.id)}>
               <ListItemAvatar>
                 <Avatar variant="rounded" src={course.avatar}>
@@ -90,6 +95,11 @@ function AppBarClasses(props) {
               <ListItemText primary={course.name} primaryTypographyProps={styles.primary}/>
             </ListItem>
           ))}
+
+          <Box display="flex" justifyContent="center" my={1}>
+            <Pagination color="success" size="small" shape="rounded"
+                        count={Math.ceil(courses.length / 7)} page={page} onChange={handlePage}/>
+          </Box>
 
           <ListItem button sx={styles.addButton} onClick={() => setDialog(true)}>
             <AddIcon/>

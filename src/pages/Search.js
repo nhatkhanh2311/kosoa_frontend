@@ -3,7 +3,8 @@ import {Link, useLocation} from "react-router-dom";
 import axios from "../stores/axios";
 import snackbarContext from "../stores/snackbar-context";
 import {
-  Avatar, Box, Card, CardContent, CardHeader, CircularProgress, Grid, IconButton, Tab, Tabs, Tooltip, Typography
+  Avatar, Box, Card, CardContent, CardHeader, CircularProgress, Grid, IconButton, Pagination, Tab, Tabs, Tooltip,
+  Typography
 } from "@mui/material";
 import {Category as CategoryIcon, Launch as LaunchIcon, Stairs as StairsIcon} from "@mui/icons-material";
 import moment from "moment";
@@ -15,6 +16,7 @@ function Search() {
   const [tab, setTab] = useState("student");
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     document.title = "Tìm kiếm - KoSoA";
@@ -39,6 +41,16 @@ function Search() {
       });
   }
 
+  const changeTab = (value) => {
+    setTab(value);
+    setPage(1);
+  }
+
+  const handlePage = (e, value) => {
+    setPage(value);
+    window.scrollTo(0, 0);
+  }
+
   return (
     <Box display="flex" justifyContent="center" mt={2}>
       <Card elevation={6} sx={styles.card}>
@@ -61,7 +73,7 @@ function Search() {
           </Box>
         ) : (
           <Box mt={2}>
-            {(tab === "teacher" || tab === "student") && results.map((user) => (
+            {(tab === "teacher" || tab === "student") && results.slice((page - 1) * 5, page * 5).map((user) => (
               <Card sx={styles.cardChild}>
                 <CardHeader avatar={<Avatar src={user.avatar} component={Link} to={`/user/${user.id}`}/>}
                             title={
@@ -102,7 +114,7 @@ function Search() {
               </Card>
             ))}
 
-            {tab === "class" && results.map((course) => (
+            {tab === "class" && results.slice((page - 1) * 5, page * 5).map((course) => (
               <Card sx={styles.cardChild}>
                 <CardHeader avatar={<Avatar variant="rounded" src={course.avatar} component={Link}
                                             to={`/student/class/${course.id}`}/>}
@@ -114,12 +126,14 @@ function Search() {
                             subheader={course.members + " thành viên"}/>
 
                 <CardContent>
-                  {course.description.length > 80 ? course.description.substring(0, 80) + "..." : course.description}
+                  {course.description && (
+                    course.description.length > 80 ? course.description.substring(0, 80) + "..." : course.description
+                  )}
                 </CardContent>
               </Card>
             ))}
 
-            {tab === "term" && results.map((term) => (
+            {tab === "term" && results.slice((page - 1) * 5, page * 5).map((term) => (
               <Card sx={styles.cardChild}>
                 <Grid container my={2} mx={2}>
                   <Grid item xs={5}>
@@ -173,6 +187,10 @@ function Search() {
                 </Grid>
               </Card>
             ))}
+
+            <Box display="flex" justifyContent="center" mb={1}>
+              <Pagination color="success" count={Math.ceil(results.length / 5)} page={page} onChange={handlePage}/>
+            </Box>
           </Box>
         )}
       </Card>

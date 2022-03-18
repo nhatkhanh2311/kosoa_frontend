@@ -3,8 +3,8 @@ import {Link, useParams} from "react-router-dom";
 import axios from "../../stores/axios";
 import snackbarContext from "../../stores/snackbar-context";
 import {
-  Avatar, Box, Button, Card, CardHeader, CircularProgress, Dialog, DialogContent, DialogTitle, Grid, IconButton, Tab,
-  Tabs, Tooltip, Typography
+  Avatar, Box, Button, Card, CardHeader, CircularProgress, Dialog, DialogContent, DialogTitle, Grid, IconButton,
+  Pagination, Tab, Tabs, Tooltip, Typography
 } from "@mui/material";
 import {Clear as ClearIcon, Done as DoneIcon} from "@mui/icons-material";
 
@@ -17,6 +17,7 @@ function MembersList() {
   const [dialog, setDialog] = useState(false);
   const [loading, setLoading] = useState(false);
   const [disabled, setDisabled] = useState(false);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     getData();
@@ -83,6 +84,10 @@ function MembersList() {
       });
   }
 
+  const handlePage = (e, value) => {
+    setPage(value);
+  }
+
   return (
     <Card elevation={6}>
       <Tabs value={tab} centered onChange={(e, value) => setTab(value)}>
@@ -96,7 +101,7 @@ function MembersList() {
         </Box>
       ) : (
         <>
-          {tab === "accepted" && members.map((member) => (
+          {tab === "accepted" && members.slice((page - 1) * 10, page * 10).map((member) => (
             <Grid container>
               <Grid item xs={8}>
                 <CardHeader avatar={<Avatar src={member.avatar} component={Link}
@@ -138,7 +143,7 @@ function MembersList() {
             </Grid>
           ))}
 
-          {tab === "requested" && members.map((member) => (
+          {tab === "requested" && members.slice((page - 1) * 10, page * 10).map((member) => (
             <Grid container>
               <Grid item xs={8}>
                 <CardHeader avatar={<Avatar src={member.avatar} component={Link}
@@ -165,6 +170,11 @@ function MembersList() {
               </Grid>
             </Grid>
           ))}
+
+          <Box display="flex" justifyContent="center" my={1}>
+            <Pagination color="success" size="small" shape="rounded"
+                        count={Math.ceil(members.length / 10)} page={page} onChange={handlePage}/>
+          </Box>
         </>
       )}
     </Card>

@@ -4,7 +4,7 @@ import axios from "../../stores/axios";
 import snackbarContext from "../../stores/snackbar-context";
 import {
   Avatar, Box, Button, Card, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Divider, FormControl,
-  ListItem, ListItemAvatar, ListItemText, TextField, Typography
+  ListItem, ListItemAvatar, ListItemText, Pagination, TextField, Typography
 } from "@mui/material";
 import {Add as AddIcon, Group as GroupIcon} from "@mui/icons-material";
 
@@ -21,6 +21,7 @@ function ClassAppBarSets(props) {
   const [validateName, setValidateName] = useState(false);
   const [disabled, setDisabled]= useState(false);
   const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     getData();
@@ -89,6 +90,10 @@ function ClassAppBarSets(props) {
     props.render(id);
   }
 
+  const handlePage = (e, value) => {
+    setPage(value);
+  }
+
   return (
     <Card elevation={6}>
       {loading ? (
@@ -115,6 +120,11 @@ function ClassAppBarSets(props) {
               <Divider/>
             </>
           ))}
+
+          <Box display="flex" justifyContent="center" my={1}>
+            <Pagination color="success" size="small" shape="rounded"
+                        count={Math.ceil(sets.length / 5)} page={page} onChange={handlePage}/>
+          </Box>
 
           <ListItem button sx={styles.addButton} onClick={() => setDialog(true)}>
             <AddIcon/>

@@ -1,7 +1,9 @@
 import React, {useContext, useEffect, useState} from "react";
 import axios from "../../stores/axios";
 import snackbarContext from "../../stores/snackbar-context";
-import {Avatar, Box, Card, CircularProgress, ListItem, ListItemAvatar, ListItemText, Typography} from "@mui/material";
+import {
+  Avatar, Box, Card, CircularProgress, ListItem, ListItemAvatar, ListItemText, Pagination, Typography
+} from "@mui/material";
 import {Group as GroupIcon} from "@mui/icons-material";
 
 function AppBarClasses(props) {
@@ -10,6 +12,7 @@ function AppBarClasses(props) {
   const [courses, setCourses] = useState([]);
   const [currentClass, setCurrentClass] = useState(-1);
   const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     getClasses();
@@ -33,6 +36,10 @@ function AppBarClasses(props) {
     props.render(id);
   }
 
+  const handlePage = (e, value) => {
+    setPage(value);
+  }
+
   return (
     <Card elevation={6}>
       <Typography textAlign="center" fontSize={25} fontWeight="bold" my={2}>
@@ -43,16 +50,25 @@ function AppBarClasses(props) {
         <Box display="flex" justifyContent="center">
           <CircularProgress color="success"/>
         </Box>
-      ) : courses.map((course, index) => (
-        <ListItem button selected={currentClass === index} onClick={() => selectClass(index, course.id)}>
-          <ListItemAvatar>
-            <Avatar variant="rounded" src={course.avatar}>
-              <GroupIcon/>
-            </Avatar>
-          </ListItemAvatar>
-          <ListItemText primary={course.name} primaryTypographyProps={styles.primary}/>
-        </ListItem>
-      ))}
+      ) : (
+        <>
+          {courses.slice((page - 1) * 7, page * 7).map((course, index) => (
+            <ListItem button selected={currentClass === index} onClick={() => selectClass(index, course.id)}>
+              <ListItemAvatar>
+                <Avatar variant="rounded" src={course.avatar}>
+                  <GroupIcon/>
+                </Avatar>
+              </ListItemAvatar>
+              <ListItemText primary={course.name} primaryTypographyProps={styles.primary}/>
+            </ListItem>
+          ))}
+
+          <Box display="flex" justifyContent="center" mb={1}>
+            <Pagination color="success" size="small" shape="rounded"
+                        count={Math.ceil(courses.length / 7)} page={page} onChange={handlePage}/>
+          </Box>
+        </>
+      )}
     </Card>
   );
 }

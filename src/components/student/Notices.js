@@ -84,8 +84,7 @@ function Notices() {
             Bạn chưa tham gia lớp học này!
           </Typography>
         </Card>
-      )
-      }
+      )}
     </Container>
   );
 }

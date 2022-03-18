@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useState} from "react";
 import {Link, useParams} from "react-router-dom";
 import axios from "../../stores/axios";
 import snackbarContext from "../../stores/snackbar-context";
-import {Avatar, Box, Card, CardHeader, CircularProgress, Grid, Typography} from "@mui/material";
+import {Avatar, Box, Card, CardHeader, CircularProgress, Pagination, Typography} from "@mui/material";
 
 function MembersList() {
   const {classId} = useParams();
@@ -10,6 +10,7 @@ function MembersList() {
 
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     getData();
@@ -30,6 +31,10 @@ function MembersList() {
       });
   }
 
+  const handlePage = (e, value) => {
+    setPage(value);
+  }
+
   return (
     <Card elevation={6}>
       <Typography textAlign="center" fontSize={22} fontWeight="bold" my={2}>
@@ -40,15 +45,24 @@ function MembersList() {
         <Box display="flex" justifyContent="center">
           <CircularProgress color="success"/>
         </Box>
-      ) : members.map((member) => (
-        <CardHeader avatar={<Avatar src={member.avatar} component={Link}
-                                    to={`/user/${member.userId}`} target="_blank"/>}
-                    title={
-                      <Typography sx={styles.title} component={Link} to={`/user/${member.userId}`} target="_blank">
-                        {member.name}
-                      </Typography>
-                    }/>
-      ))}
+      ) : (
+        <>
+          {members.slice((page - 1) * 10, page * 10).map((member) => (
+            <CardHeader avatar={<Avatar src={member.avatar} component={Link}
+                                        to={`/user/${member.userId}`} target="_blank"/>}
+                        title={
+                          <Typography sx={styles.title} component={Link} to={`/user/${member.userId}`} target="_blank">
+                            {member.name}
+                          </Typography>
+                        }/>
+          ))}
+
+          <Box display="flex" justifyContent="center" my={1}>
+            <Pagination color="success" size="small" shape="rounded"
+                        count={Math.ceil(members.length / 10)} page={page} onChange={handlePage}/>
+          </Box>
+        </>
+      )}
     </Card>
   );
 }
